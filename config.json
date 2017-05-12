@@ -1,6 +1,9 @@
 {
-    "ipScanStart": "192.168.0.1",
-    "ipScanEnd": "192.168.0.254",
-    "ipOmit": ["192.168.0.25"],
-    "ports": [8080, 8112, 8081, 32400]
+    "ipScanStart": "127.0.0.1",
+    "ipScanEnd": "127.0.0.3",
+    "ipOmit": [],
+    "ipForce": [],
+    "ports": [8080, 8112, 8081, 32400],
+    "domain": "local",
+    "ignoreHost": false
 }

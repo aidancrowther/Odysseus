@@ -10,6 +10,9 @@ $(document).ready(function(){
 			getList();
 		});
 	});
+	$('#loginButton').click(function(){
+
+	});
 });
 
 function getList(){
@@ -31,8 +34,8 @@ function getList(){
 
 function addThumbnail(element, port, thumbnails){
 	for(var key in thumbnails){
-		if(portList[thumbnails[key].split('-')[1].split('.')[0]] == port){
-			$(element).text($(element).text()+" - "+thumbnails[key].split('-')[1].split('.')[0]);
+		if(portList[thumbnails[key].split('.')[0]] == port){
+			$(element).text($(element).text()+" - "+thumbnails[key].split('.')[0]);
 			$(element).css('background-image', 'url(images/'+thumbnails[key]+')')
         }
 	}

@@ -3,5 +3,6 @@
   "web": 80,
   "sickrage": 8081,
   "deluge": 8112,
-  "bitTorrent": 9091
+  "transmission": 9091,
+  "web": 8080
 }

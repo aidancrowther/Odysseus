@@ -6,10 +6,13 @@ var fs = require('fs');
 var express = require('express');
 var app = express();
 var evilscan = require('evilscan');
+var ip = require('ip');
 
 //program constants
 const ROOT = './interface';
 const PORT = 8080;
+//const IP = ip.address();
+const IP = "127.0.0.1";
 
 //static file server
 app.use(express.static('interface'));
@@ -22,16 +25,20 @@ app.get('/', function(req, res){
 //update hosts upon receiving get request for /update
 app.get('/update', function(req, res){
     var config = JSON.parse(fs.readFileSync('config.json'));
+    var portList = JSON.parse(fs.readFileSync('ports.json'));
     var options = {};
     var ipRange = config['ipScanStart']+'-'+config['ipScanEnd'];
     var ports = '';
+    var domain = config['domain'];
     var ipOmit = config['ipOmit'];
+    var ipForce = config['ipForce'];
+    var ignoreHost = config['ignoreHost'];
     var thumbnails = {};
 
     //scan for thumbnails
     var images = fs.readdirSync('./interface/images');
     for(var image in images){
-        var current = images[image].split('-')[0];
+        var current = images[image].split('.')[0];
         if(thumbnails[current]) thumbnails[current].append(images[image]);
         else thumbnails[current] = [images[image]];
     }
@@ -50,10 +57,14 @@ app.get('/update', function(req, res){
     var scanner = new evilscan(options);
 
     scanner.on('result', function(data){
-        //ignore devices without a hostname
-        if(data.hasOwnProperty('reverse')) if(ipOmit.indexOf(data['ip']) < 0){
+        //ignoreHost if set true
+        if(ignoreHost && data['ip'] === IP);
+        //ignore devices without a hostname, unless they have been whitelisted
+        else if(data.hasOwnProperty('reverse') || ipForce.indexOf(data['ip']) >= 0) if(ipOmit.indexOf(data['ip']) < 0){
+            //set the name field of whitelisted servers to their IP
+            if(ipForce.indexOf(data['ip']) >= 0) data['reverse'] = data['ip'];
             //strip host domain from names
-            if(data['reverse'].includes('.')) data['reverse'] = data['reverse'].split('.')[0];
+            if(data['reverse'].includes('.'+domain)) data['reverse'] = data['reverse'].split('.')[0];
             results.push(data);
         }
     });
@@ -65,9 +76,13 @@ app.get('/update', function(req, res){
             //write hosts to json object, removing duplicates
             if(!devices[current['reverse']]){
                 devices[current['reverse']] = current;
-                if(thumbnails.hasOwnProperty(current['reverse'])) devices[current['reverse']]['thumbnails'] = thumbnails[current['reverse']];
             }
             else devices[current['reverse']]['port'] += ', '+current['port'];
+            for(var port in portList){
+                if(current['port'] === portList[port]){
+                    if(thumbnails.hasOwnProperty(port)) devices[current['reverse']]['thumbnails'] = thumbnails[port];
+                }
+            }
         }
         //write hosts to hosts.json
         fs.writeFile('hosts.json', JSON.stringify(devices), function(err){
