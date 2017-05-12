@@ -1,0 +1,30 @@
+body{
+	background-image: url(wallpaper.jpg);
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	font-family: Copperplate, "Copperplate Gothic Light", fantasy;
+}
+div.panel{
+	background-color: #e0e0eb;
+}
+h1{
+	text-decoration: underline;
+	text-align: center;
+}
+#pages{
+	padding: 50px;
+	text-align: center;
+}
+div.host{
+	box-shadow: 2px 2px black;
+	background-color: #868c8a;
+	width: 150px;
+	height: 150px;
+	display: inline-block;
+	margin: 10px;
+	line-height: 50%;
+	padding-top: 130px;
+	background-size: contain;
+	color: white;
+	text-shadow: 2px 2px black;
+}
