@@ -55,6 +55,7 @@ app.get('/update', function(req, res){
         if(port != config['ports'].length-1) ports += config['ports'][port]+', ';
         else ports += config['ports'][port];
     }
+
     options['port'] = ports;
     options['reverse'] = true;
     options['json'] = true;
@@ -62,6 +63,7 @@ app.get('/update', function(req, res){
     var results = [];
     var scanner = new evilscan(options);
 
+    //Run the scanner and parse results
     scanner.on('result', function(data){
         allIps[data['ip']] = data;
         allIps[data['ip']]['omit'] = false;

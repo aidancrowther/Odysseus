@@ -3,6 +3,7 @@ var allIps = {};
 var config = {};
 var hosts = {};
 
+//get values and attach button listeners
 $(document).ready(function(){
 	getPorts();
 	writeConfig();
@@ -19,13 +20,17 @@ $(document).ready(function(){
 			});
 	});
     $('#changePortBtn').click(function(){
-		console.log('update');
+		updatePorts();
     });
+    $('#redirectHostBtn').click(function(){
+    	redirectHost();
+	});
 	$('#loginButton').click(function(){
 
 	});
 });
 
+//Fetch the list of valid hosts based on config settings
 function getList(){
 	$.get('/hosts', function(hostList){
 		hosts = hostList;
@@ -46,6 +51,7 @@ function getList(){
 		});
 }
 
+//Add thumbnails to elements if they exist
 function addThumbnail(element, port, thumbnails){
 	if(typeof port == 'string') if(port.includes('/')) port = port.split('/')[0];
 	for(var key in thumbnails){
@@ -56,6 +62,7 @@ function addThumbnail(element, port, thumbnails){
 	}
 }
 
+//Write a list of ips to the specified field
 function writeIps(id){
 	$('#'+id).empty();
 	for(var ip in allIps){
@@ -68,6 +75,7 @@ function writeIps(id){
 	}
 }
 
+//Write config settings to settings page
 function writeConfig(){
 	getIps();
 	$.get('/config', function(data){
@@ -95,6 +103,7 @@ function writeConfig(){
 		})
 }
 
+//parse settings page and update config accordingly
 function updateConfig(){
     config['ipScanStart'] = $('#ipStart').val();
     config['ipScanEnd'] = $('#ipEnd').val();
@@ -122,16 +131,62 @@ function updateConfig(){
     console.log(config);
 }
 
+//Add/remove ports specified by user
+function updatePorts(){
+	if($('#changePort').val() != null){
+		var removed = false;
+		var ports = config['ports'];
+        var portVal = $('#changePort').val();
+        var hostName;
+        if ($('#changePort').val().includes(' - ')){
+        	portVal = $('#changePort').val().split(' - ')[0];
+        	hostName = $('#changePort').val().split(' - ')[1];
+            if(/^\d+$/.test(portVal) && !config['ports'].includes(portVal)) config['ports'].push(portVal);
+            for(var host in portList) if(portList[host] == portVal && hostName) delete portList[host];
+            if(/^\d+$/.test(portVal) && hostName) portList[hostName] = parseInt(portVal);
+        }
+        else {
+            for (var port in ports) {
+                if (ports[port] == portVal) {
+                    config['ports'].splice(config['ports'].indexOf(portVal), 1);
+                    removed = true;
+                }
+            }
+        }
+	}
+}
+
+//Specify host redirects
+function redirectHost(){
+    var host = '';
+    var port = '';
+    var redirect = '';
+
+    if($('#redirectHost').val().split(':')[0]) host = $('#redirectHost').val().split(':')[0];
+    if($('#redirectHost').val().split(':')[1].split('/')[0]) port = $('#redirectHost').val().split(':')[1].split('/')[0];
+    if(!/^\d+$/.test(port)) port = '';
+    if($('#redirectHost').val().split(':')[1].split('/')[1]) redirect = $('#redirectHost').val().split(':')[1].split('/')[1];
+
+    if(host && port && redirect && hosts[host]) {
+        if (!config['redirect'][host]) config['redirect'][host] = [];
+        config['redirect'][host][0] = port;
+        config['redirect'][host][1] = redirect;
+    }
+}
+
+//Send client to webpage
 function redirect(){
 	window.location = 'http://'+$(this).attr('id').split('-')[0]+':'+$(this).attr('id').split('-')[1];
 }
 
+//Fetch a list of port definitions (services)
 function getPorts(){
     $.get('/ports', function(data){
         portList = data;
     })
 }
 
+//Fetch a list of all IPs that were scanned
 function getIps(){
     $.get('/ips', function(data){
         allIps = data;
