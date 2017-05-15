@@ -3,6 +3,5 @@
   "web": 80,
   "sickrage": 8081,
   "deluge": 8112,
-  "transmission": 9091,
-  "web": 8080
+  "transmission": 9091
 }

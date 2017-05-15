@@ -6,6 +6,7 @@ body{
 }
 div.panel{
 	background-color: #e0e0eb;
+	padding: 10px;
 }
 h1{
 	text-decoration: underline;
@@ -23,8 +24,13 @@ div.host{
 	display: inline-block;
 	margin: 10px;
 	line-height: 50%;
-	padding-top: 130px;
+	padding-top: 120px;
 	background-size: contain;
 	color: white;
 	text-shadow: 2px 2px black;
+	cursor: pointer;
+}
+#settingsForm{
+	margin: 0 auto;
+	width: 80%;
 }

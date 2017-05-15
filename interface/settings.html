@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Odysseus - Home</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="scripts.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <p class="navbar-brand">Odysseus Home</p>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="nav navbar-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="monitoring.html">Monitoring</a></li>
+                <li><a href="settings.html">Settings</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><button class="btn navbar-btn" id="loginButton"><span class="glyphicon glyphicon-log-in"></span>Login</button>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col col-md-10 col-md-offset-1">
+            <div class="panel panel-default">
+                <h2 style="text-align: center;">Odysseus Settings</h2>
+                <br>
+                <div id="settingsForm">
+                    <div class="form-group">
+                        <label for="ipStart">Ip Address Start:</label>
+                        <input class="form-control" id="ipStart" placeholder="192.168.0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="ipEnd">Ip Address End:</label>
+                        <input class="form-control" id="ipEnd" placeholder="192.168.0.254">
+                    </div>
+                    <div class="form-group">
+                        <label for="ipOmit">Omit/Force Host:</label>
+                        <select multiple class="form-control" id="ipOmit">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ports">Ports to Scan:</label>
+                        <select multiple class="form-control" id="ports">
+                        </select>
+                    </div>
+                    <fieldset class="form-inline">
+                        <div class="form-group">
+                            <label for="changePort">Add/Remove Port:</label>
+                            <input class="form-control" id="changePort" placeholder="80 - web">
+                            <button type="submit" class="btn btn-default" id="changePortBtn">Submit</button>
+                        </div>
+                    </fieldset>
+                    <hr style="border-color: black;">
+                    <div class="form-group">
+                        <label for="domain">Domain:</label>
+                        <input class="form-control" id="domain" placeholder="local">
+                    </div>
+                    <div class="form-group">
+                        <label for="ignoreHost">Ignore Host:</label>
+                        <select class="form-control" id="ignoreHost">
+                            <option val="true">True</option>
+                            <option val="false">False</option>
+                        </select>
+                    </div>
+                    <hr style="border-color: black;">
+                    <div class="form-group">
+                        <label for="redirects">Hosts to Redirect:</label>
+                        <select multiple class="form-control" id="redirects">
+                        </select>
+                    </div>
+                    <fieldset class="form-inline">
+                        <div class="form-group">
+                            <label for="redirectHost">Set Host Redirect:</label>
+                            <input class="form-control" id="redirectHost" placeholder="192.168.0.1:80/admin">
+                            <button type="submit" class="btn btn-default" id="redirectHostBtn">Submit</button>
+                        </div>
+                    </fieldset>
+                    <br>
+                <center><button id="updateBtn">Update List</button></center>
+                <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<footer>
+    <center><p>Made By: Aidan Crowther</p></center>
+</footer>
+</html>
