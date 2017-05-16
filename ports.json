@@ -1,7 +1,1 @@
-{
-  "plex": 32400,
-  "web": 80,
-  "sickrage": 8081,
-  "deluge": 8112,
-  "transmission": 9091
-}
+{"plex":"32400","sickrage":"8081","deluge":"8112","transmission":"9091","web":"80"}

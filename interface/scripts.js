@@ -6,11 +6,12 @@ var hosts = {};
 //get values and attach button listeners
 $(document).ready(function(){
 	getPorts();
+	getConfig();
 	writeConfig();
 	getList();
 	$('#updateBtn').click(function(){
 		updateConfig();
-		$.post('/update', config)
+		$.post('/update', {"config": config, "portList": portList})
 			.done(function() {
                 $.get('/update')
                     .done(function(){
@@ -25,8 +26,13 @@ $(document).ready(function(){
     $('#redirectHostBtn').click(function(){
     	redirectHost();
 	});
-	$('#loginButton').click(function(){
-
+    $('#enableMonitoring').change(function(){
+    	if($('#enableMonitoring').val() == "True"){
+            $('#monitors').slideDown(1000);
+		}
+		else{
+            $('#monitors').slideUp(1000);
+		}
 	});
 });
 
@@ -78,29 +84,24 @@ function writeIps(id){
 //Write config settings to settings page
 function writeConfig(){
 	getIps();
-	$.get('/config', function(data){
-		config = data;
-	})
-		.done(function(){
-			$('#ipStart').val(config['ipScanStart']);
-			$('#ipEnd').val(config['ipScanEnd']);
-			var ports = config['ports'];
-			$('#ports').empty();
-			for(var port in ports){
-				var service = '';
-				for(var serviceName in portList) if(portList[serviceName] == ports[port]) service = " - "+serviceName;
-				$('#ports').append('<option>'+ports[port]+service+'</option>');
-			}
-			$('#domain').val(config['domain']);
-			var state = "False";
-			if(config['ignoreHost']) state = "True";
-			$('#ignoreHost').val(state);
-			$('#redirects').empty();
-			var redirects = config['redirect'];
-			for(var key in redirects){
-				$('#redirects').append('<option>'+key+':'+redirects[key][0]+' => '+key+':'+redirects[key][0]+redirects[key][1]+'</option>');
-			}
-		})
+	$('#ipStart').val(config['ipScanStart']);
+	$('#ipEnd').val(config['ipScanEnd']);
+	var ports = config['ports'];
+	$('#ports').empty();
+	for(var port in ports){
+		var service = '';
+		for(var serviceName in portList) if(portList[serviceName] == ports[port]) service = " - "+serviceName;
+		$('#ports').append('<option>'+ports[port]+service+'</option>');
+	}
+	$('#domain').val(config['domain']);
+	var state = "False";
+	if(config['ignoreHost']) state = "True";
+	$('#ignoreHost').val(state);
+	$('#redirects').empty();
+	var redirects = config['redirect'];
+	for(var key in redirects){
+		$('#redirects').append('<option>'+key+':'+redirects[key][0]+' => '+key+':'+redirects[key][0]+redirects[key][1]+'</option>');
+	}
 }
 
 //parse settings page and update config accordingly
@@ -127,8 +128,6 @@ function updateConfig(){
 
 	if(config['ipOmit'] == [] || !config['ipOmit']) config['ipOmit'] = [''];
     if(config['ipForce'] == [] || !config['ipForce']) config['ipForce'] = [''];
-
-    console.log(config);
 }
 
 //Add/remove ports specified by user
@@ -153,6 +152,7 @@ function updatePorts(){
                 }
             }
         }
+        writeConfig();
 	}
 }
 
@@ -170,8 +170,9 @@ function redirectHost(){
     if(host && port && redirect && hosts[host]) {
         if (!config['redirect'][host]) config['redirect'][host] = [];
         config['redirect'][host][0] = port;
-        config['redirect'][host][1] = redirect;
+        config['redirect'][host][1] = '/'+redirect;
     }
+    writeConfig();
 }
 
 //Send client to webpage
@@ -191,5 +192,12 @@ function getIps(){
     $.get('/ips', function(data){
         allIps = data;
         writeIps('ipOmit');
+    })
+}
+
+//Fetch the server config
+function getConfig(){
+    $.get('/config', function(data){
+        config = data;
     })
 }

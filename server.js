@@ -41,6 +41,8 @@ app.get('/update', function(req, res){
     var redirects = config['redirect'];
     var omitHosts = config['omitHosts'];
 
+    allIps = {};
+
     //scan for thumbnails
     var images = fs.readdirSync('./interface/images');
     for(var image in images){
@@ -95,7 +97,7 @@ app.get('/update', function(req, res){
             }
             else devices[current['reverse']]['port'] += ', ' + current['port'];
             for (var port in portList) {
-                if (current['port'] === (portList[port])) {
+                if (current['port'] == (portList[port])) {
                     if(thumbnails.hasOwnProperty(port)) devices[current['reverse']]['thumbnails'].push(thumbnails[port][0]);
                     if(redirects.hasOwnProperty((current['reverse']))){
                         if(redirects[current['reverse']][0] == portList[port]){
@@ -121,9 +123,12 @@ app.get('/update', function(req, res){
 
 //update config settings
 app.post('/update', urlEncodedParser, function(req, res){
-    fs.writeFile('config.json', JSON.stringify(req.body), function(err){
+    fs.writeFile('config.json', JSON.stringify(req.body['config']), function(err){
         if(err) res.sendStatus(500);
-        res.sendStatus(200);
+        fs.writeFile('ports.json', JSON.stringify(req.body['portList']), function(err){
+            if(err) res.sendStatus(500);
+            res.sendStatus(200);
+        });
     });
 });
 
