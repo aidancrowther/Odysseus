@@ -28,6 +28,7 @@ $(document).ready(function(){
 	});
     $('#enableMonitoring').change(function(){
     	if($('#enableMonitoring').val() == "True"){
+            populateMonitors();
             $('#monitors').slideDown(1000);
 		}
 		else{
@@ -173,6 +174,13 @@ function redirectHost(){
         config['redirect'][host][1] = '/'+redirect;
     }
     writeConfig();
+}
+
+//Populate monitors panel with running server details
+function populateMonitors(){
+    $.get('/monitoring', function(data){
+        console.log(data);
+    });
 }
 
 //Send client to webpage

@@ -8,6 +8,7 @@ var app = express();
 var evilscan = require('evilscan');
 var ip = require('ip');
 var bodyParser = require('body-parser');
+const exec = require('child_process').exec;
 
 //program constants
 const ROOT = './interface';
@@ -150,6 +151,31 @@ app.get('/ips', function(req, res){
 //return config settings
 app.get('/config', function(req, res){
     res.send(JSON.parse(fs.readFileSync('config.json')));
+});
+
+//return server monitoring results
+app.get('/monitoring', function(req, res){
+    var checkStatus = exec('ruptime', (error, stdout, stderr) => {
+        var result = stdout.split(/[ ,\n/\\]+/);
+        var hosts = [];
+        var final = {};
+
+        for(var element in result){
+            if(result[element]) hosts.push(result[element]);
+        }
+        for(var j=0; j<(hosts.length/9); j++){
+            var element = j*9;
+            final[hosts[element]] = {};
+            final[hosts[element]]['status'] = hosts[element+1];
+            final[hosts[element]]['uptime'] = hosts[element+2];
+            final[hosts[element]]['users'] = hosts[element+3];
+            final[hosts[element]]['1min'] = hosts[element+6];
+            final[hosts[element]]['5min'] = hosts[element+7];
+            final[hosts[element]]['15min'] = hosts[element+8];
+        }
+        if(error !== null) console.log('exec error: ${error}');
+        res.send(final);
+    });
 });
 
 //listen for requests on port 8080
