@@ -96,8 +96,9 @@ function writeConfig(){
 	$('#redirects').empty();
 	var redirects = config['redirect'];
 	for(var key in redirects){
-		$('#redirects').append('<option>'+key+':'+redirects[key][0]+' => '+key+':'+redirects[key][0]+redirects[key][1]+'</option>');
+		if(key != 'placeHolder') $('#redirects').append('<option>'+key+':'+redirects[key][0]+' => '+key+':'+redirects[key][0]+redirects[key][1]+'</option>');
 	}
+    if(!config['redirect']) config['redirect'] = {"placeHolder": ['blank', 'blank']};
 
 	if(config['monitoring'] == "true"){
         $('#enableMonitoring').val("True");
@@ -179,6 +180,7 @@ function redirectHost(){
             if (!config['redirect'][host]) config['redirect'][host] = [];
             config['redirect'][host][0] = port;
             config['redirect'][host][1] = '/'+redirect;
+            console.log(config['redirect'][host]);
         }
     }
 
