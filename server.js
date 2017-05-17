@@ -12,7 +12,7 @@ const exec = require('child_process').exec;
 
 //program constants
 const ROOT = './interface';
-const PORT = 8080;
+const PORT = 80;
 const IP = ip.address();
 
 //global variables

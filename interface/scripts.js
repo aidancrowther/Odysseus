@@ -167,16 +167,23 @@ function redirectHost(){
     var port = '';
     var redirect = '';
 
-    if($('#redirectHost').val().split(':')[0]) host = $('#redirectHost').val().split(':')[0];
-    if($('#redirectHost').val().split(':')[1].split('/')[0]) port = $('#redirectHost').val().split(':')[1].split('/')[0];
-    if(!/^\d+$/.test(port)) port = '';
-    if($('#redirectHost').val().split(':')[1].split('/')[1]) redirect = $('#redirectHost').val().split(':')[1].split('/')[1];
+    if(config['redirect'][$('#redirectHost').val()]) delete config['redirect'][$('#redirectHost').val()];
 
-    if(host && port && redirect && hosts[host]) {
-        if (!config['redirect'][host]) config['redirect'][host] = [];
-        config['redirect'][host][0] = port;
-        config['redirect'][host][1] = '/'+redirect;
+    else{
+        if($('#redirectHost').val().split(':')[0]) host = $('#redirectHost').val().split(':')[0];
+        if($('#redirectHost').val().split(':')[1].split('/')[0]) port = $('#redirectHost').val().split(':')[1].split('/')[0];
+        if(!/^\d+$/.test(port)) port = '';
+        if($('#redirectHost').val().split(':')[1].split('/')[1]) redirect = $('#redirectHost').val().split(':')[1].split('/')[1];
+
+        if(host && port && redirect && hosts[host]) {
+            if (!config['redirect'][host]) config['redirect'][host] = [];
+            config['redirect'][host][0] = port;
+            config['redirect'][host][1] = '/'+redirect;
+        }
     }
+
+    if(config['redirect'] = {}) config['redirect'][''] = '';
+
     writeConfig();
 }
 
@@ -203,6 +210,9 @@ function populateMonitors(){
         	$('#monitoringWarning').css("display", "");
         	config['monitoring'] = false;
         	writeUpdate(true);
+        }
+        else{
+            console.log(data);
         }
     });
 }
