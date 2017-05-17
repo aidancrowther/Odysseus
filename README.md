@@ -37,7 +37,7 @@ Install:
      `npm install`
      
    - Run server (may require root permissions based on download location)
-     `node server.js`
+     `npm start`
      
    - Additional options:
    
