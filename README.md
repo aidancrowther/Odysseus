@@ -22,7 +22,7 @@ Status:
    
 Roadmap:
 
-   - [ ] Fix host redirects
+   - [x] Fix host redirects
    - [ ] Allow services to appear on multiple ports
    - [ ] Block hosts by name in web GUI
    - [ ] Improve error reporting
