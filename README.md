@@ -30,16 +30,27 @@ Roadmap:
 Install:
 
    - Download repository
-     'git clone https://github.com/aidancrowther/Odysseus'
+     `git clone https://github.com/aidancrowther/Odysseus`
      
    - Navigate to Odysseus folder and install packages
-     'npm install'
+     `npm install`
      
    - Run server (may require root permissions based on download location)
-     'node server.js'
+     `node server.js`
      
-   - additional options:
+   - Additional options:
    
-      - Set server port in server.json 'const port = 80;'
+      - Set server port in `server.json` `const port = 80;`
+      - Add host redirects in `config.json` in the form of `"redirect": {"Host": ["port", "/page"], ...}`
+      - Setup monitoring by installing RWHO on server `sudo apt-get install rwho`, and RWHOD on clients `sudo apt-get install rwhod`
+      - Add thumbnails to the images folder to add more flair to links based on their service, name thumbnails `[service].png`
+      - Add custom port definitions in `ports.json` in the form `[servicename]: [port]`
       
+Problems:
+
+   Please feel free to notify me of any issues you encounter, and I will fix them as soon as possible.
    
+Thank You:
+
+    Special Thanks to [eviltik/evilscan](https://github.com/eviltik/evilscan) for writing the port scanner that is the basis of this project.
+    
