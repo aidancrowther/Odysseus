@@ -2,6 +2,7 @@ body{
 	background-image: url(wallpaper.jpg);
 	background-repeat: no-repeat;
 	background-attachment: fixed;
+        background-size: cover;
 	font-family: Copperplate, "Copperplate Gothic Light", fantasy;
 }
 div.panel{

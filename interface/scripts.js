@@ -46,7 +46,7 @@ function getList(){
         	var ports = [hostList[key]['port']];
         	if(typeof hostList[key]['port'] === 'string') ports = hostList[key]['port'].split(', ');
         	for(var port in ports) {
-                var div = $('<div id=' + key + '-' + ports[port] + ' class="host"><p>' + hostList[key]['reverse'] + '</p></div>');
+                var div = $('<div id=' + hostList[key]['ip'] + '-' + ports[port] + ' class="host"><p>' + hostList[key]['reverse'] + '</p></div>');
                 if (hostList[key]['thumbnails']) addThumbnail(div, ports[port], hostList[key]['thumbnails']);
                 $(div).click(redirect);
                 $('#pages').append($(div));
