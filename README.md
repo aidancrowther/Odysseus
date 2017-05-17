@@ -22,10 +22,10 @@ Status:
    
 Roadmap:
 
-   -[ ] Fix host redirects
-   -[ ] Allow services to appear on multiple ports
-   -[ ] Improve error reporting
-   -[ ] Auto Installer
+   - [ ] Fix host redirects
+   - [ ] Allow services to appear on multiple ports
+   - [ ] Improve error reporting
+   - [ ] Auto Installer
    
 Install:
 
@@ -39,6 +39,7 @@ Install:
      'node server.js'
      
    - additional options:
+   
       - Set server port in server.json 'const port = 80;'
       
    
