@@ -1,12 +1,1 @@
-{
-  "omitHosts":["Hestia"],
-  "ports":["8112","8081","9091","32400","80"],
-  "ignoreHost":"true",
-  "monitoring":"true",
-  "ipOmit":[""],
-  "ipForce":[""],
-  "ipScanStart":"192.168.0.1",
-  "ipScanEnd":"192.168.0.254",
-  "domain":"local",
-  "redirect":{"Host":["port","/redirect"]}
-}
+{"omitHosts":["Hestia"],"ports":["8112","8081","9091","32400","80"],"ignoreHost":"true","monitoring":"false","ipOmit":[""],"ipForce":[""],"ipScanStart":"127.0.0.1","ipScanEnd":"127.0.0.1","domain":"local","redirect":{"Host":["port","/redirect"],"Themis":["80","/admin"]}}

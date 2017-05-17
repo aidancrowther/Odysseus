@@ -95,10 +95,7 @@ function writeConfig(){
 	$('#ignoreHost').val(state);
 	$('#redirects').empty();
 	var redirects = config['redirect'];
-	for(var key in redirects){
-		if(key != 'placeHolder') $('#redirects').append('<option>'+key+':'+redirects[key][0]+' => '+key+':'+redirects[key][0]+redirects[key][1]+'</option>');
-	}
-    if(!config['redirect']) config['redirect'] = {"placeHolder": ['blank', 'blank']};
+	for(var key in redirects) if(hosts[key] && key) $('#redirects').append('<option>'+key+':'+redirects[key][0]+' => '+key+':'+redirects[key][0]+redirects[key][1]+'</option>');
 
 	if(config['monitoring'] == "true"){
         $('#enableMonitoring').val("True");
@@ -170,21 +167,20 @@ function redirectHost(){
 
     if(config['redirect'][$('#redirectHost').val()]) delete config['redirect'][$('#redirectHost').val()];
 
-    else{
-        if($('#redirectHost').val().split(':')[0]) host = $('#redirectHost').val().split(':')[0];
-        if($('#redirectHost').val().split(':')[1].split('/')[0]) port = $('#redirectHost').val().split(':')[1].split('/')[0];
-        if(!/^\d+$/.test(port)) port = '';
-        if($('#redirectHost').val().split(':')[1].split('/')[1]) redirect = $('#redirectHost').val().split(':')[1].split('/')[1];
+    	if($('#redirectHost').val().includes(':') && $('#redirectHost').val().includes('/')) {
+            host = $('#redirectHost').val().split(':')[0];
+            port = $('#redirectHost').val().split(':')[1].split('/')[0];
+            if (!/^\d+$/.test(port)) port = '';
+            redirect = $('#redirectHost').val().split(':')[1].split('/')[1];
+        }
 
-        if(host && port && redirect && hosts[host]) {
+        if(hosts[host]) {
             if (!config['redirect'][host]) config['redirect'][host] = [];
             config['redirect'][host][0] = port;
             config['redirect'][host][1] = '/'+redirect;
-            console.log(config['redirect'][host]);
-        }
-    }
+    	}
 
-    if(config['redirect'] = {}) config['redirect'][''] = '';
+    if(!config['redirect']['Host']) config['redirect']['Host'] = ["port", "/redirect"];
 
     writeConfig();
 }

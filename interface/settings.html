@@ -41,6 +41,8 @@
                 <h1>Odysseus Settings</h1>
                 <br>
                 <div id="settingsForm">
+                    <div class="row">
+                        <div class="col-md-6">
                     <div class="form-group">
                         <label for="ipStart">Ip Address Start:</label>
                         <input class="form-control" id="ipStart" placeholder="192.168.0.1">
@@ -49,24 +51,6 @@
                         <label for="ipEnd">Ip Address End:</label>
                         <input class="form-control" id="ipEnd" placeholder="192.168.0.254">
                     </div>
-                    <div class="form-group">
-                        <label for="ipOmit">Omit/Force Host:</label>
-                        <select multiple class="form-control" id="ipOmit">
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="ports">Ports to Scan:</label>
-                        <select multiple class="form-control" id="ports">
-                        </select>
-                    </div>
-                    <fieldset class="form-inline">
-                        <div class="form-group">
-                            <label for="changePort">Add/Remove Port:</label>
-                            <input class="form-control" id="changePort" placeholder="80 - web">
-                            <button class="btn btn-default" id="changePortBtn">Submit</button>
-                        </div>
-                    </fieldset>
-                    <hr style="border-color: black;">
                     <div class="form-group">
                         <label for="domain">Domain:</label>
                         <input class="form-control" id="domain" placeholder="local">
@@ -78,22 +62,54 @@
                             <option val="false">False</option>
                         </select>
                     </div>
-                    <hr style="border-color: black;">
+                        </div>
+                        <div class="col-md-6">
                     <div class="form-group">
-                        <label for="redirects">Hosts to Redirect:</label>
-                        <select multiple class="form-control" id="redirects">
+                        <label for="ipOmit">Omit/Force Host:</label>
+                        <select multiple class="form-control" id="ipOmit" size="7">
                         </select>
                     </div>
-                    <fieldset class="form-inline">
-                        <div class="form-group">
-                            <label for="redirectHost">Set Host Redirect:</label>
-                            <input class="form-control" id="redirectHost" placeholder="192.168.0.1:80/admin">
-                            <button class="btn btn-default" id="redirectHostBtn">Submit</button>
+                    <div class="form-group">
+                        <label for="omitHost">Omit by Hostname:</label>
+                        <input class="form-control" id="omitHost" placeholder="Kitchen-PC">
+                        <br>
+                        <button class="btn btn-default" id="omitHostBtn">Submit</button>
+                    </div>
                         </div>
-                    </fieldset>
+                    </div>
+                    <hr style="border-color: black;">
+                    <div class="row">
+                        <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="ports">Ports to Scan:</label>
+                        <select multiple class="form-control" id="ports" size="7">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="changePort">Add/Remove Port:</label>
+                        <input class="form-control" id="changePort" placeholder="80 - web">
+                        <br>
+                        <button class="btn btn-default" id="changePortBtn">Submit</button>
+                    </div>
+                        </div>
+                        <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="redirects">Hosts to Redirect:</label>
+                        <select multiple class="form-control" id="redirects" size="7">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="redirectHost">Set Host Redirect:</label>
+                        <input class="form-control" id="redirectHost" placeholder="192.168.0.1:80/admin">
+                        <br>
+                        <button class="btn btn-default" id="redirectHostBtn">Submit</button>
+                    </div>
                     <br>
+                        </div>
+                    </div>
                 <center><button id="updateBtn" class="btn btn-default">Update List</button></center>
                 <br>
+                </div>
                 </div>
             </div>
         </div>
