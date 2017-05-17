@@ -4,11 +4,11 @@ Description:
 
   Odysseus is a tool designed to automatically scan, and track servers on a home network, allowing an easier solution for loading webGUI's, as well as providing rudimentary server monitoring through RWHO.
   
-Status
+Status:
   
    This project is still under heavy development, the current distribution is mostly stable, however it is still case sensitive, and      doesnt provide much error reporting. 
    
-   Currently Supports
+   Currently Supports:
    
    - Scanning a predefined range of ip's (ipStart -> ipEnd)
    - Scanning specified ports (80, 8081, etc...)
@@ -20,4 +20,25 @@ Status
    - Redirect from host:port to host:port/page (currently in development, manually add redirects to config.json for now)
    - Basic server monitoring, simply install RWHOD on servers to monitor, and RWHO on host server to enable monitoring
    
-   Roadmap
+Roadmap:
+
+   -[ ] Fix host redirects
+   -[ ] Allow services to appear on multiple ports
+   -[ ] Improve error reporting
+   -[ ] Auto Installer
+   
+Install:
+
+   - Download repository
+     'git clone https://github.com/aidancrowther/Odysseus'
+     
+   - Navigate to Odysseus folder and install packages
+     'npm install'
+     
+   - Run server (may require root permissions based on download location)
+     'node server.js'
+     
+   - additional options:
+      - Set server port in server.json 'const port = 80;'
+      
+   
