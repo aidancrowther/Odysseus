@@ -39,3 +39,8 @@ div.host{
 	width: 80%;
 	margin: 0 auto;
 }
+#monitoringWarning{
+	width: 80%;
+	margin: 0 auto;
+	text-align: center;
+}

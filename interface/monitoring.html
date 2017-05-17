@@ -38,8 +38,8 @@
     <div class="row">
         <div class="col col-md-10 col-md-offset-1">
             <div class="panel panel-default">
+                <h1>Server Monitoring</h1>
                 <div id="monitorDiv">
-                    <h1>Server Monitoring</h1>
                     <br>
                     <label for="enableMonitoring">Enable Monitoring:</label>
                     <select class="form-control" id="enableMonitoring">
@@ -47,6 +47,9 @@
                         <option val="true">True</option>
                     </select>
                     <br>
+                    <div class="alert alert-danger" id="monitoringWarning" style="display:none;">
+                        <strong>Warning!</strong> Your server is missing RWHO, monitoring will be disabled
+                    </div>
                     <br>
                     <div id="monitors" style="display:none;">
                         <table class="table table-striped">

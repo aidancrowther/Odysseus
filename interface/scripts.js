@@ -7,18 +7,10 @@ var hosts = {};
 $(document).ready(function(){
 	getPorts();
 	getConfig();
-	writeConfig();
 	getList();
 	$('#updateBtn').click(function(){
 		updateConfig();
-		$.post('/update', {"config": config, "portList": portList})
-			.done(function() {
-                $.get('/update')
-                    .done(function(){
-                        getPorts();
-                        getList();
-                    });
-			});
+		writeUpdate();
 	});
     $('#changePortBtn').click(function(){
 		updatePorts();
@@ -27,13 +19,15 @@ $(document).ready(function(){
     	redirectHost();
 	});
     $('#enableMonitoring').change(function(){
-    	if($('#enableMonitoring').val() == "True"){
-            populateMonitors();
+        config['monitoring'] = ($('#enableMonitoring').val() == "True");
+        if($('#enableMonitoring').val() == "True"){
             $('#monitors').slideDown(1000);
-		}
-		else{
+            populateMonitors();
+        }
+        else{
             $('#monitors').slideUp(1000);
-		}
+        }
+        writeUpdate(true);
 	});
 });
 
@@ -54,6 +48,7 @@ function getList(){
         }
 	})
 		.done(function(){
+			updateConfig();
 			writeConfig();
 		});
 }
@@ -103,17 +98,26 @@ function writeConfig(){
 	for(var key in redirects){
 		$('#redirects').append('<option>'+key+':'+redirects[key][0]+' => '+key+':'+redirects[key][0]+redirects[key][1]+'</option>');
 	}
+
+	if(config['monitoring'] == "true"){
+        $('#enableMonitoring').val("True");
+        $('#monitors').slideDown(1000);
+        populateMonitors();
+	}
+	else{
+        $('#monitors').slideUp(1000);
+	}
 }
 
 //parse settings page and update config accordingly
 function updateConfig(){
-    config['ipScanStart'] = $('#ipStart').val();
-    config['ipScanEnd'] = $('#ipEnd').val();
-    config['domain'] = $('#domain').val();
+    if($('#ipStart').val()) config['ipScanStart'] = $('#ipStart').val();
+    if($('#ipEnd').val()) config['ipScanEnd'] = $('#ipEnd').val();
+    if($('#domain').val()) config['domain'] = $('#domain').val();
 
     var ignoreHost = false;
     if($('#ignoreHost').val() == "True") ignoreHost = true;
-    config['ignoreHost'] = ignoreHost;
+    if($('#ignoreHost').val()) config['ignoreHost'] = ignoreHost;
 
     var omissions = $('#ipOmit').val();
     for(var omission in omissions){
@@ -176,10 +180,30 @@ function redirectHost(){
     writeConfig();
 }
 
+//Write config to server
+function writeUpdate(dontScan){
+    $.post('/update', {"config": config, "portList": portList})
+        .done(function() {
+        	if(!dontScan) {
+                $.get('/update')
+                    .done(function () {
+                        getPorts();
+                        getList();
+                    });
+            }
+        });
+}
+
 //Populate monitors panel with running server details
 function populateMonitors(){
     $.get('/monitoring', function(data){
-        console.log(data);
+        if(data['error']){
+        	$('#enableMonitoring').val("False");
+            $('#monitors').css('display', 'none');
+        	$('#monitoringWarning').css("display", "");
+        	config['monitoring'] = false;
+        	writeUpdate(true);
+        }
     });
 }
 
@@ -207,5 +231,5 @@ function getIps(){
 function getConfig(){
     $.get('/config', function(data){
         config = data;
-    })
+    }).done(function(){writeConfig();});
 }

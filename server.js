@@ -12,7 +12,7 @@ const exec = require('child_process').exec;
 
 //program constants
 const ROOT = './interface';
-const PORT = 80;
+const PORT = 8080;
 const IP = ip.address();
 
 //global variables
@@ -155,7 +155,7 @@ app.get('/config', function(req, res){
 
 //return server monitoring results
 app.get('/monitoring', function(req, res){
-    var checkStatus = exec('ruptime', (error, stdout, stderr) => {
+    var checkStatus = exec('ruptime', function(error, stdout, stderr){
         var result = stdout.split(/[ ,\n/\\]+/);
         var hosts = [];
         var final = {};
@@ -173,7 +173,7 @@ app.get('/monitoring', function(req, res){
             final[hosts[element]]['5min'] = hosts[element+7];
             final[hosts[element]]['15min'] = hosts[element+8];
         }
-        if(error !== null) console.log('exec error: ${error}');
+        if(error !== null) final['error'] = error;
         res.send(final);
     });
 });
