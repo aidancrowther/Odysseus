@@ -214,7 +214,10 @@ function populateMonitors(){
         	writeUpdate(true);
         }
         else{
-            console.log(data);
+            $('#hostMonitors').empty();
+            for(var key in data){
+                $('#hostMonitors').append('<tr><td>'+key+'</td><td>'+data[key]['status']+'</td><td>'+data[key]['uptime']+'</td><td>'+data[key]['users']+'</td><td>'+data[key]['1min']+', '+data[key]['5min']+', '+data[key]['15min']+'</td></tr>');
+            }
         }
     });
 }
