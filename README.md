@@ -27,6 +27,7 @@ Roadmap:
    - [ ] Block hosts by name in web GUI
    - [ ] Improve error reporting
    - [ ] Auto Installer
+   - [ ] Restrict access to monitoring/settings pages
    
 Install:
 
