@@ -50,16 +50,16 @@ Usage:
 
    After getting your server running you can access the webpage by connecting to your hosts ip adress on the port you specified (default 80). The home page will show hosts that have been found on your network, and should be blank on first connection. Navigate to the settings page in order to setup the scanner, setting descriptions are as follows:
    
-   - IP address start: define the starting point for the IP scanner `x.x.x.x`
-   - IP address end: define the ending point for the scanner `x.x.x.x, start>end`
-   - Domain: specify your networks domain to automatically append/remove domain suffix as necessary
-   - Ignore host: Specify whether or no you want the host to appear in the server list (If ignore host is enabled you cannot omit the host by hostname)
-   - Omit/Force host: select from the list of located devices to block/unblock the device by its IP, if the device has no hostname it will automatically be blocked, selecting it will toggle its forced mode. Forced IPs will be given their IP as a hostname
-   - Omit by hostname: Enter a hostname (CASE sensitive) to prevent from appearing on the server list
-   - Ports to scan: Lists the ports that will be scanned, and their associated service (a few defaults have been included)
-   - Add/Remove port: enter a port in the form of `[port] - [service name]` to add/ovewrite it in the list, or just enter the port number to remove it from the list entirely.
-   - Hosts to redirect: shows a list of existing host redirects, and where they redirect to, currently each host can only have one redirect
-   - Set/Remove host redirect: enter a redirect in the form `[hostname]:[port]/[page]` to add/overwrite the entry in the list. To remove a redirect only enter the hostname for the redirect to remove
+   - __IP address start__: define the starting point for the IP scanner `x.x.x.x`
+   - __IP address end__: define the ending point for the scanner `x.x.x.x, start>end`
+   - __Domain: specify your networks domain to automatically append/remove domain suffix as necessary
+   - __Ignore host__: Specify whether or no you want the host to appear in the server list (If ignore host is enabled you cannot omit the host by hostname)
+   - __Omit/Force host__: select from the list of located devices to block/unblock the device by its IP, if the device has no hostname it will automatically be blocked, selecting it will toggle its forced mode. Forced IPs will be given their IP as a hostname
+   - __Omit by hostname__: Enter a hostname (CASE sensitive) to prevent from appearing on the server list
+   - __Ports to scan__: Lists the ports that will be scanned, and their associated service (a few defaults have been included)
+   - __Add/Remove port__: enter a port in the form of `[port] - [service name]` to add/ovewrite it in the list, or just enter the port number to remove it from the list entirely.
+   - __Hosts to redirect__: shows a list of existing host redirects, and where they redirect to, currently each host can only have one redirect
+   - __Set/Remove host redirect__: enter a redirect in the form `[hostname]:[port]/[page]` to add/overwrite the entry in the list. To remove a redirect only enter the hostname for the redirect to remove
    - Click the submit button below any of the forms to commit the changes to the configuration
    - Click update list to save the configuration to the server and scan your network
    
