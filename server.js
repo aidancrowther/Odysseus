@@ -75,7 +75,7 @@ app.get('/update', function(req, res){
         if(ipOmit.includes(data['ip']) || omitHosts.includes(data['reverse'])) allIps[data['ip']]['omit'] = true;
         if(ipForce.includes(data['ip'])) allIps[data['ip']]['forced'] = true;
         //ignoreHost if set true
-        if(ignoreHost && data['ip'] === IP);
+        if((ignoreHost == 'true') && data['ip'] === IP);
         //ignore devices without a hostname, unless they have been whitelisted
         else if(data.hasOwnProperty('reverse') || ipForce.indexOf(data['ip']) >= 0) if(omitHosts.indexOf(data['reverse']) < 0 && ipOmit.indexOf(data['ip']) < 0){
             //set the name field of whitelisted servers to their IP

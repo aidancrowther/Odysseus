@@ -38,7 +38,7 @@
     <div class="row">
         <div class="col col-md-10 col-md-offset-1">
             <div class="panel panel-default">
-                <h1>Odysseus Settings</h1>
+                <h2>Odysseus Settings</h2>
                 <br>
                 <div id="settingsForm">
                     <div class="row">
@@ -99,7 +99,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="redirectHost">Set Host Redirect:</label>
+                        <label for="redirectHost">Set/Remove Host Redirect:</label>
                         <input class="form-control" id="redirectHost" placeholder="192.168.0.1:80/admin">
                         <br>
                         <button class="btn btn-default" id="redirectHostBtn">Submit</button>
@@ -108,7 +108,6 @@
                         </div>
                     </div>
                 <center><button id="updateBtn" class="btn btn-default">Update List</button></center>
-                <br>
                 </div>
                 </div>
             </div>
@@ -119,5 +118,42 @@
 
 <footer>
     <center><p>Made By: Aidan Crowther</p></center>
+    <div id="updateModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Updating IP List</h4>
+                </div>
+                <div class="modal-body" id="updateModalBody">
+                    <img id="updateLoader" src="images/loading.gif" style="display: none;">
+                    <div class="alert alert-success" id="updateComplete" style="display:none">
+                        <strong>Success!</strong> Ip List has been updated successfully
+                    </div>
+                    <div class="alert alert-danger" id="updateFailed" style="display:none">
+                        <strong>Error!</strong> Ip List failed to update, please check your server configuration
+                    </div>
+                </div>
+                <div class="modal-footer" id="updateModalFooter">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="warningModal" class="modal fade text-center" data-backdrop="static" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>User Input Error</h4>
+                </div>
+                <div class="modal-body" id="warningModalBody">
+                    <div class="alert alert-warning" id="warningMessage">
+                        <strong>Warning!</strong> You must scan at least one port
+                    </div>
+                </div>
+                <div class="modal-footer" id="warningModalFooter">
+                </div>
+            </div>
+        </div>
+    </div>
 </footer>
 </html>

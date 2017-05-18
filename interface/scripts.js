@@ -7,7 +7,6 @@ var hosts = {};
 $(document).ready(function(){
 	getPorts();
 	getConfig();
-	getList();
 	$('#updateBtn').click(function(){
 		updateConfig();
 		writeUpdate();
@@ -29,6 +28,9 @@ $(document).ready(function(){
         }
         writeUpdate(true);
 	});
+    $('#omitHostBtn').click(function(){
+        updateOmissions();
+    });
 });
 
 //Fetch the list of valid hosts based on config settings
@@ -91,7 +93,7 @@ function writeConfig(){
 	}
 	$('#domain').val(config['domain']);
 	var state = "False";
-	if(config['ignoreHost']) state = "True";
+	if(config['ignoreHost'] == 'true') state = "True";
 	$('#ignoreHost').val(state);
 	$('#redirects').empty();
 	var redirects = config['redirect'];
@@ -112,25 +114,59 @@ function updateConfig(){
     if($('#ipStart').val()) config['ipScanStart'] = $('#ipStart').val();
     if($('#ipEnd').val()) config['ipScanEnd'] = $('#ipEnd').val();
     if($('#domain').val()) config['domain'] = $('#domain').val();
+    config['ignoreHost'] = ($('#ignoreHost').val() == "True");
+}
 
-    var ignoreHost = false;
-    if($('#ignoreHost').val() == "True") ignoreHost = true;
-    if($('#ignoreHost').val()) config['ignoreHost'] = ignoreHost;
+//Update list of omitted addresses
+function updateOmissions(){
+    if($('#omitHost').val()){
+        var host = $('#omitHost').val();
+        var omissions = config['omitHosts'];
+        if(omissions.includes(host)){
+            config['omitHosts'].splice(omissions.indexOf(host), 1);
+            var locatedHost;
+            for(var ip in allIps) if(allIps[ip]['reverse'] == host) locatedHost = allIps[ip];
+            locatedHost['omit'] = false;
+            hosts[locatedHost['reverse']] = locatedHost;
+        }
+        else if(hosts[host]){
+            config['omitHosts'].push(host);
+            allIps[hosts[host]['ip']]['omit'] = true;
+            delete hosts[host];
+        }
+    }
+    else{
+        var omissions = $('#ipOmit').val();
+        for (var omission in omissions) {
+            var host = {};
+            for (var ip in allIps) {
+                if (allIps[ip]['ip'] == omissions[omission].split(' - ')[1]) host = allIps[ip];
+            }
+            if(!config['omitHosts'].includes(host['reverse'])) {
+                if (host['forced']) {
+                    config['ipForce'].splice(config['ipForce'].indexOf(host['ip']), 1);
+                    allIps[host['ip']]['forced'] = false;
+                }
+                else if (!host['forced'] && !host['reverse']) {
+                    config['ipForce'].push(host['ip']);
+                    allIps[host['ip']]['forced'] = true;
+                }
+                else if (host['omit']) {
+                    config['ipOmit'].splice(config['ipOmit'].indexOf(host['ip']), 1);
+                    allIps[host['ip']]['omit'] = false;
+                }
+                else {
+                    config['ipOmit'].push(host['ip']);
+                    allIps[host['ip']]['omit'] = true;
+                }
+            }
+        }
 
-    var omissions = $('#ipOmit').val();
-    for(var omission in omissions){
-    	var host = {};
-    	for(var ip in allIps){
-    		if(allIps[ip]['ip'] == omissions[omission].split(' - ')[1]) host = allIps[ip];
-		}
-		if(host['forced']) config['ipForce'].splice(config['ipForce'].indexOf(host['ip']), 1);
-		else if(!host['forced'] && !host['reverse']) config['ipForce'].push(host['ip']);
-		else if(host['omit']) config['ipOmit'].splice(config['ipOmit'].indexOf(host['ip']), 1);
-		else config['ipOmit'].push(host['ip']);
-	}
+        if (config['ipOmit'] == [] || !config['ipOmit']) config['ipOmit'] = [''];
+        if (config['ipForce'] == [] || !config['ipForce']) config['ipForce'] = [''];
+    }
 
-	if(config['ipOmit'] == [] || !config['ipOmit']) config['ipOmit'] = [''];
-    if(config['ipForce'] == [] || !config['ipForce']) config['ipForce'] = [''];
+    writeIps('ipOmit');
 }
 
 //Add/remove ports specified by user
@@ -140,6 +176,16 @@ function updatePorts(){
 		var ports = config['ports'];
         var portVal = $('#changePort').val();
         var hostName;
+
+        //Do not allow the user to remove all ports
+        if(config['ports'].length <= 1){
+            $('#warningModal').modal('show');
+            setTimeout(function(){
+                $('#warningModalFooter').append('<center><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></center>');
+            }, 2000);
+            return;
+        }
+
         if ($('#changePort').val().includes(' - ')){
         	portVal = $('#changePort').val().split(' - ')[0];
         	hostName = $('#changePort').val().split(' - ')[1];
@@ -160,25 +206,25 @@ function updatePorts(){
 }
 
 //Specify host redirects
-function redirectHost(){
+function redirectHost(skipWrite){
     var host = '';
     var port = '';
     var redirect = '';
 
     if(config['redirect'][$('#redirectHost').val()]) delete config['redirect'][$('#redirectHost').val()];
 
-    	if($('#redirectHost').val().includes(':') && $('#redirectHost').val().includes('/')) {
-            host = $('#redirectHost').val().split(':')[0];
-            port = $('#redirectHost').val().split(':')[1].split('/')[0];
-            if (!/^\d+$/.test(port)) port = '';
-            redirect = $('#redirectHost').val().split(':')[1].split('/')[1];
-        }
+    if($('#redirectHost').val().includes(':') && $('#redirectHost').val().includes('/')) {
+        host = $('#redirectHost').val().split(':')[0];
+        port = $('#redirectHost').val().split(':')[1].split('/')[0];
+        if (!/^\d+$/.test(port)) port = '';
+        redirect = $('#redirectHost').val().split(':')[1].split('/')[1];
+    }
 
-        if(hosts[host]) {
-            if (!config['redirect'][host]) config['redirect'][host] = [];
-            config['redirect'][host][0] = port;
-            config['redirect'][host][1] = '/'+redirect;
-    	}
+    if(hosts[host]) {
+        if (!config['redirect'][host]) config['redirect'][host] = [];
+        config['redirect'][host][0] = port;
+        config['redirect'][host][1] = '/'+redirect;
+    }
 
     if(!config['redirect']['Host']) config['redirect']['Host'] = ["port", "/redirect"];
 
@@ -187,14 +233,33 @@ function redirectHost(){
 
 //Write config to server
 function writeUpdate(dontScan){
+    if(!dontScan){
+        $('#updateModal').modal('show');
+        $('#updateLoader').css('display', '');
+    }
     $.post('/update', {"config": config, "portList": portList})
-        .done(function() {
-        	if(!dontScan) {
-                $.get('/update')
-                    .done(function () {
+        .done(function(){
+        	if(!dontScan){
+                $.ajax({url: '/update', timeout: 20000})
+                    .done(function(){
                         getPorts();
                         getList();
-                    });
+                        getConfig();
+                        $('#updateLoader').css('display','none');
+                        $('#updateComplete').css('display', '');
+                        setTimeout(function(){
+                            $('#updateComplete').css('display', 'none');
+                            $('#updateModal').modal('hide');
+                        }, 2000);
+                    })
+                    .fail(function(error){
+                        $('#updateLoader').css('display','none');
+                        $('#updateFailed').css('display', '');
+                        console.log(error);
+                        setTimeout(function(){
+                            $('#updateModalFooter').append('<center><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></center>');
+                        }, 2000);
+                    })
             }
         });
 }
@@ -242,5 +307,5 @@ function getIps(){
 function getConfig(){
     $.get('/config', function(data){
         config = data;
-    }).done(function(){writeConfig();});
+    }).done(function(){getList();});
 }
