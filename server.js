@@ -9,6 +9,7 @@ var evilscan = require('evilscan');
 var ip = require('ip');
 var bodyParser = require('body-parser');
 const exec = require('child_process').exec;
+require('events').EventEmitter.prototype._maxListeners = 100;
 
 //program constants
 const ROOT = './interface';
@@ -71,7 +72,7 @@ app.get('/update', function(req, res){
         allIps[data['ip']] = data;
         allIps[data['ip']]['omit'] = false;
         allIps[data['ip']]['forced'] = false;
-        if(data['reverse']) if(data['reverse'].includes('.')) allIps[data['ip']]['reverse'] = allIps[data['ip']]['reverse'].split('.')[0];
+        if(data['reverse']) if(data['reverse'].includes('.'+domain)) allIps[data['ip']]['reverse'] = allIps[data['ip']]['reverse'].split('.')[0];
         if(ipOmit.includes(data['ip']) || omitHosts.includes(data['reverse'])) allIps[data['ip']]['omit'] = true;
         if(ipForce.includes(data['ip'])) allIps[data['ip']]['forced'] = true;
         //ignoreHost if set true
@@ -93,17 +94,17 @@ app.get('/update', function(req, res){
             //write hosts to json object, removing duplicates
             if (!devices[current['reverse']]) {
                 devices[current['reverse']] = current;
-                devices[current['reverse']]['port'] = current['port'];
+                devices[current['reverse']]['port'] = current['port'] +', 8080';
                 devices[current['reverse']]['thumbnails'] = [];
             }
             else devices[current['reverse']]['port'] += ', ' + current['port'];
-            for (var port in portList) {
-                if (current['port'] == (portList[port])) {
-                    if(thumbnails.hasOwnProperty(port)) devices[current['reverse']]['thumbnails'].push(thumbnails[port][0]);
-                    if(redirects.hasOwnProperty((current['reverse']))){
-                        if(redirects[current['reverse']][0] == portList[port]){
+            for(var port in portList) {
+                if (current['port'].includes(port)) {
+                    if (thumbnails.hasOwnProperty(portList[port])) if(!devices[current['reverse']]['thumbnails'].includes(thumbnails[portList[port]][0])) devices[current['reverse']]['thumbnails'].push(thumbnails[portList[port]][0]);
+                    if(redirects.hasOwnProperty(current['reverse'])){
+                        if(redirects[current['reverse']]['ports'].indexOf(port) >= 0){
                             var toRedirect = String(devices[current['reverse']]['port']);
-                            devices[current['reverse']]['port'] = toRedirect.replace(redirects[current['reverse']][0], redirects[current['reverse']][0]+redirects[current['reverse']][1]);
+                            devices[current['reverse']]['port'] = toRedirect.replace(port, port+redirects[current['reverse']]['redirects'][redirects[current['reverse']]['ports'].indexOf(port)]);
                         }
                     }
                 }
@@ -167,11 +168,20 @@ app.get('/monitoring', function(req, res){
             var element = j*9;
             final[hosts[element]] = {};
             final[hosts[element]]['status'] = hosts[element+1];
-            final[hosts[element]]['uptime'] = hosts[element+2];
-            final[hosts[element]]['users'] = hosts[element+3];
-            final[hosts[element]]['1min'] = hosts[element+6];
-            final[hosts[element]]['5min'] = hosts[element+7];
-            final[hosts[element]]['15min'] = hosts[element+8];
+            if(final[hosts[element]]['status'] == 'down'){
+                final[hosts[element]]['uptime'] = '--';
+                final[hosts[element]]['users'] = '--';
+                final[hosts[element]]['1min'] = '--';
+                final[hosts[element]]['5min'] = '--';
+                final[hosts[element]]['15min'] = '--';
+            }
+            else {
+                final[hosts[element]]['uptime'] = hosts[element + 2];
+                final[hosts[element]]['users'] = hosts[element + 3];
+                final[hosts[element]]['1min'] = hosts[element + 6];
+                final[hosts[element]]['5min'] = hosts[element + 7];
+                final[hosts[element]]['15min'] = hosts[element + 8];
+            }
         }
         if(error !== null) final['error'] = error;
         res.send(final);

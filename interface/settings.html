@@ -125,7 +125,10 @@
                     <h4>Updating IP List</h4>
                 </div>
                 <div class="modal-body" id="updateModalBody">
-                    <img id="updateLoader" src="images/loading.gif" style="display: none;">
+                    <div id="updateLoader" style="display: none;">
+                        <img src="images/loading.gif">
+                        <p style="padding:10px;">This may take a minute, please do not close the page</p>
+                    </div>
                     <div class="alert alert-success" id="updateComplete" style="display:none">
                         <strong>Success!</strong> Ip List has been updated successfully
                     </div>
@@ -134,6 +137,7 @@
                     </div>
                 </div>
                 <div class="modal-footer" id="updateModalFooter">
+                    <center><button type="button" class="btn btn-default hideModal" style="display:none;">Close</button></center>
                 </div>
             </div>
         </div>
@@ -146,11 +150,15 @@
                     <h4>User Input Error</h4>
                 </div>
                 <div class="modal-body" id="warningModalBody">
-                    <div class="alert alert-warning" id="warningMessage">
+                    <div class="alert alert-warning" id="portWarningMessage" style="display:none;">
                         <strong>Warning!</strong> You must scan at least one port
+                    </div>
+                    <div class="alert alert-warning" id="configWarningMessage" style="display:none;">
+                        <strong>Warning!</strong> Invalid configuration
                     </div>
                 </div>
                 <div class="modal-footer" id="warningModalFooter">
+                    <center><button type="button" class="btn btn-default hideModal" style="display:none;">Close</button></center>
                 </div>
             </div>
         </div>

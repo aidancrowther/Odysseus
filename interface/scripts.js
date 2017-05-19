@@ -31,6 +31,9 @@ $(document).ready(function(){
     $('#omitHostBtn').click(function(){
         updateOmissions();
     });
+    $('.hideModal').click(function(){
+        clearModals();
+    });
 });
 
 //Fetch the list of valid hosts based on config settings
@@ -39,7 +42,7 @@ function getList(){
 		hosts = hostList;
 		$('#pages').empty();
         for(var key in hostList){
-        	var ports = [hostList[key]['port']];
+        	var ports = hostList[key]['port'];
         	if(typeof hostList[key]['port'] === 'string') ports = hostList[key]['port'].split(', ');
         	for(var port in ports) {
                 var div = $('<div id=' + hostList[key]['ip'] + '-' + ports[port] + ' class="host"><p>' + hostList[key]['reverse'] + '</p></div>');
@@ -50,7 +53,6 @@ function getList(){
         }
 	})
 		.done(function(){
-			updateConfig();
 			writeConfig();
 		});
 }
@@ -59,7 +61,7 @@ function getList(){
 function addThumbnail(element, port, thumbnails){
 	if(typeof port == 'string') if(port.includes('/')) port = port.split('/')[0];
 	for(var key in thumbnails){
-		if(portList[thumbnails[key].split('.')[0]] == port){
+		if(thumbnails[key].split('.')[0] == portList[port]){
 			$(element).html($(element).html()+'</p><p>'+thumbnails[key].split('.')[0]);
 			$(element).css('background-image', 'url(images/'+thumbnails[key]+')')
         }
@@ -87,17 +89,21 @@ function writeConfig(){
 	var ports = config['ports'];
 	$('#ports').empty();
 	for(var port in ports){
-		var service = '';
-		for(var serviceName in portList) if(portList[serviceName] == ports[port]) service = " - "+serviceName;
+		var service = ' - '+portList[ports[port]];
 		$('#ports').append('<option>'+ports[port]+service+'</option>');
 	}
 	$('#domain').val(config['domain']);
 	var state = "False";
+	console.log(config['ignoreHost']);
 	if(config['ignoreHost'] == 'true') state = "True";
 	$('#ignoreHost').val(state);
 	$('#redirects').empty();
 	var redirects = config['redirect'];
-	for(var key in redirects) if(hosts[key] && key) $('#redirects').append('<option>'+key+':'+redirects[key][0]+' => '+key+':'+redirects[key][0]+redirects[key][1]+'</option>');
+	for(var key in redirects) if(hosts[key] && key){
+        for(var redirectPort in redirects[key]['ports']) {
+            $('#redirects').append('<option>' + key + ':' + redirects[key]['ports'][redirectPort] + ' => ' + key + ':' + redirects[key]['ports'][redirectPort] + redirects[key]['redirects'][redirectPort] + '</option>');
+        }
+    }
 
 	if(config['monitoring'] == "true"){
         $('#enableMonitoring').val("True");
@@ -109,12 +115,59 @@ function writeConfig(){
 	}
 }
 
+function checkConfig(){
+
+    var configOkay = true;
+
+    if(config['ipScanStart']) {
+        if(config['ipScanStart'].includes('.')) {
+            if(/^[0-9.]+$/.test(config['ipScanStart'])) {
+                var ipStart = config['ipScanStart'].split('.');
+                if (ipStart.length == 4 && parseInt(ipStart[3]) < 255 && parseInt(ipStart[3]) >= 0) configOkay = configOkay && true;
+                else configOkay = false;
+            }
+            else configOkay = false;
+        }
+        else configOkay = false;
+    }
+    else configOkay = false;
+
+    if(config['ipScanEnd']) {
+        if(config['ipScanEnd'].includes('.')) {
+            if (/^[0-9.]+$/.test(config['ipScanStart'])) {
+                var ipEnd = config['ipScanEnd'].split('.');
+                if (ipEnd.length == 4 && parseInt(ipEnd[3]) < 255 && parseInt(ipEnd[3]) >= 0) configOkay = configOkay && true;
+                else configOkay = false;
+            }
+            else configOkay = false;
+        }
+        else configOkay = false;
+    }
+    else configOkay = false;
+
+    if(ipStart && ipEnd){
+        if(parseInt(ipEnd[3]) >= parseInt(ipStart[3]) && (ipStart.slice(0,3).join('.')) == (ipEnd.slice(0,3).join('.'))) configOkay = configOkay && true;
+        else configOkay = false;
+    }
+    else configOkay = false;
+
+    if(/^[a-zA-Z]+$/.test(config['domain'])) configOkay = configOkay && true;
+    else configOkay = false;
+
+    if (config['ipOmit'] == [] || !config['ipOmit']) config['ipOmit'] = [''];
+    if (config['ipForce'] == [] || !config['ipForce']) config['ipForce'] = [''];
+    if(!config['redirect']['Host']) config['redirect']['Host'] = ["port", "/redirect"];
+
+    return configOkay;
+}
+
 //parse settings page and update config accordingly
 function updateConfig(){
     if($('#ipStart').val()) config['ipScanStart'] = $('#ipStart').val();
     if($('#ipEnd').val()) config['ipScanEnd'] = $('#ipEnd').val();
     if($('#domain').val()) config['domain'] = $('#domain').val();
-    config['ignoreHost'] = ($('#ignoreHost').val() == "True");
+    if($('#ignoreHost').val() == "True") config['ignoreHost'] = 'true';
+    else config['ignoreHost'] = 'false';
 }
 
 //Update list of omitted addresses
@@ -146,10 +199,13 @@ function updateOmissions(){
                 if (host['forced']) {
                     config['ipForce'].splice(config['ipForce'].indexOf(host['ip']), 1);
                     allIps[host['ip']]['forced'] = false;
+                    delete allIps[host['ip']]['reverse'];
+                    delete hosts[host['reverse']];
                 }
-                else if (!host['forced'] && !host['reverse']) {
+                else if (!host['forced'] && !host['reverse'] && !config['ipForce'].includes(host['ip'])) {
                     config['ipForce'].push(host['ip']);
                     allIps[host['ip']]['forced'] = true;
+                    allIps[host['ip']]['reverse'] = allIps[host['ip']]['ip'];
                 }
                 else if (host['omit']) {
                     config['ipOmit'].splice(config['ipOmit'].indexOf(host['ip']), 1);
@@ -161,107 +217,132 @@ function updateOmissions(){
                 }
             }
         }
-
-        if (config['ipOmit'] == [] || !config['ipOmit']) config['ipOmit'] = [''];
-        if (config['ipForce'] == [] || !config['ipForce']) config['ipForce'] = [''];
     }
-
     writeIps('ipOmit');
 }
 
 //Add/remove ports specified by user
 function updatePorts(){
-	if($('#changePort').val() != null){
-		var removed = false;
-		var ports = config['ports'];
-        var portVal = $('#changePort').val();
-        var hostName;
+    if($('#ports').val()){
+        var selected = $('#ports').val();
+        var ports = config['ports'];
+        for(var selection in selected){
+            var toRemove = selected[selection].split(' - ')[0];
+            console.log(toRemove);
+            config['ports'].splice(config['ports'].indexOf(toRemove), 1);
 
-        //Do not allow the user to remove all ports
-        if(config['ports'].length <= 1){
-            $('#warningModal').modal('show');
-            setTimeout(function(){
-                $('#warningModalFooter').append('<center><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></center>');
-            }, 2000);
-            return;
-        }
+            //Do not allow the user to remove all ports
+            if (config['ports'].length < 1) {
+                $('#warningModal').modal('show');
+                $('#portWarningMessage').css('display', '');
+                setTimeout(function () {
+                    $('#warningModalFooter .hideModal').css('display', '');
+                }, 2000);
+                return;
+            }
 
-        if ($('#changePort').val().includes(' - ')){
-        	portVal = $('#changePort').val().split(' - ')[0];
-        	hostName = $('#changePort').val().split(' - ')[1];
-            if(/^\d+$/.test(portVal) && !config['ports'].includes(portVal)) config['ports'].push(portVal);
-            for(var host in portList) if(portList[host] == portVal && hostName) delete portList[host];
-            if(/^\d+$/.test(portVal) && hostName) portList[hostName] = parseInt(portVal);
+            delete portList[toRemove];
         }
-        else {
-            for (var port in ports) {
-                if (ports[port] == portVal) {
-                    config['ports'].splice(config['ports'].indexOf(portVal), 1);
-                    removed = true;
-                }
+    }
+    else {
+        if ($('#changePort').val() != null) {
+            var ports = config['ports'];
+            var portVal = $('#changePort').val();
+            var hostName;
+
+            if ($('#changePort').val().includes(' - ')) {
+                portVal = $('#changePort').val().split(' - ')[0];
+                hostName = $('#changePort').val().split(' - ')[1];
+                if (/^\d+$/.test(portVal) && !config['ports'].includes(portVal)) config['ports'].push(portVal);
+                for (var host in portList) if (portList[host] == portVal && hostName) delete portList[host];
+                if (/^\d+$/.test(portVal) && hostName) portList[parseInt(portVal)] = hostName;
             }
         }
-        writeConfig();
-	}
+    }
+    writeConfig();
 }
 
 //Specify host redirects
-function redirectHost(skipWrite){
+function redirectHost(){
     var host = '';
     var port = '';
     var redirect = '';
 
-    if(config['redirect'][$('#redirectHost').val()]) delete config['redirect'][$('#redirectHost').val()];
-
-    if($('#redirectHost').val().includes(':') && $('#redirectHost').val().includes('/')) {
-        host = $('#redirectHost').val().split(':')[0];
-        port = $('#redirectHost').val().split(':')[1].split('/')[0];
-        if (!/^\d+$/.test(port)) port = '';
-        redirect = $('#redirectHost').val().split(':')[1].split('/')[1];
+    if($('#redirects').val()){
+        var selected = $('#redirects').val();
+        for(var selection in selected){
+            var toRemove = selected[selection].split(' => ')[0];
+            host = toRemove.split(':')[0];
+            port = toRemove.split(':')[1];
+            config['redirect'][host]['redirects'].splice(config['redirect'][host]['ports'].indexOf(port), 1);
+            config['redirect'][host]['ports'].splice(config['redirect'][host]['ports'].indexOf(port), 1);
+        }
     }
+    else {
+        if ($('#redirectHost').val().includes(':') && $('#redirectHost').val().includes('/')) {
+            host = $('#redirectHost').val().split(':')[0];
+            port = $('#redirectHost').val().split(':')[1].split('/')[0];
+            if (!/^\d+$/.test(port)) port = '';
+            redirect = $('#redirectHost').val().split(':')[1].split('/')[1];
+        }
 
-    if(hosts[host]) {
-        if (!config['redirect'][host]) config['redirect'][host] = [];
-        config['redirect'][host][0] = port;
-        config['redirect'][host][1] = '/'+redirect;
+        if (hosts[host] && port && host && redirect) {
+            if (!config['redirect'][host]) config['redirect'][host] = [];
+            if (config['redirect'][host]['ports'].includes(port)) {
+                config['redirect'][host]['redirects'].splice(config['redirect'][host]['ports'].indexOf(port), 1);
+                config['redirect'][host]['ports'].splice(config['redirect'][host]['ports'].indexOf(port), 1);
+            }
+            else if (config['redirect'][host]['redirects'].includes(redirect)) {
+                config['redirect'][host]['ports'].splice(config['redirect'][host]['redirects'].indexOf(redirect), 1);
+                config['redirect'][host]['redirects'].splice(config['redirect'][host]['redirects'].indexOf(redirect), 1);
+            }
+            config['redirect'][host]['ports'].push(port);
+            config['redirect'][host]['redirects'].push('/' + redirect);
+        }
     }
-
-    if(!config['redirect']['Host']) config['redirect']['Host'] = ["port", "/redirect"];
 
     writeConfig();
 }
 
 //Write config to server
 function writeUpdate(dontScan){
-    if(!dontScan){
-        $('#updateModal').modal('show');
-        $('#updateLoader').css('display', '');
+    if(checkConfig()) {
+        if (!dontScan) {
+            $('#updateModal').modal('show');
+            $('#updateLoader').css('display', '');
+        }
+        $.post('/update', {"config": config, "portList": portList})
+            .done(function () {
+                if (!dontScan) {
+                    $.ajax({url: '/update', timeout: 90000})
+                        .done(function () {
+                            getPorts();
+                            getList();
+                            getConfig();
+                            $('#updateLoader').css('display', 'none');
+                            $('#updateComplete').css('display', '');
+                            setTimeout(function () {
+                                $('#updateComplete').css('display', 'none');
+                                $('#updateModal').modal('hide');
+                            }, 2000);
+                        })
+                        .fail(function (error) {
+                            $('#updateLoader').css('display', 'none');
+                            $('#updateFailed').css('display', '');
+                            setTimeout(function () {
+                                $('#updateModalFooter .hideModal').css('display', '');
+                            }, 2000);
+                        })
+                }
+            });
     }
-    $.post('/update', {"config": config, "portList": portList})
-        .done(function(){
-        	if(!dontScan){
-                $.ajax({url: '/update', timeout: 20000})
-                    .done(function(){
-                        getPorts();
-                        getList();
-                        getConfig();
-                        $('#updateLoader').css('display','none');
-                        $('#updateComplete').css('display', '');
-                        setTimeout(function(){
-                            $('#updateComplete').css('display', 'none');
-                            $('#updateModal').modal('hide');
-                        }, 2000);
-                    })
-                    .fail(function(error){
-                        $('#updateLoader').css('display','none');
-                        $('#updateFailed').css('display', '');
-                        console.log(error);
-                        setTimeout(function(){
-                            $('#updateModalFooter').append('<center><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></center>');
-                        }, 2000);
-                    })
-            }
-        });
+    else{
+        $('#warningModal').modal('show');
+        $('#configWarningMessage').css('display', '');
+        setTimeout(function () {
+            $('#warningModalFooter .hideModal').css('display', '');
+        }, 2000);
+    }
 }
 
 //Populate monitors panel with running server details
@@ -308,4 +389,18 @@ function getConfig(){
     $.get('/config', function(data){
         config = data;
     }).done(function(){getList();});
+}
+
+//Clear all modals/modal elements on screen
+function clearModals(){
+    $('#updateFailed').css('display', 'none');
+    $('#updateComplete').css('display', 'none');
+    $('#portWarningMessage').css('display', 'none');
+    $('#configWarningMessage').css('display', 'none');
+    $('#updateModalFooter [data-dismiss="modal"]').css('display', 'none');
+    $('#warningModalFooter [data-dismiss="modal"]').css('display', 'none');
+    $('#updateModalFooter .hideModal').css('display', 'none');
+    $('#warningModalFooter .hideModal').css('display', 'none');
+    $('#updateModal').modal('hide');
+    $('#warningModal').modal('hide');
 }
