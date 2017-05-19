@@ -13,7 +13,7 @@ Status:
    - Scanning a predefined range of ip's (ipStart -> ipEnd)
    - Scanning specified ports (80, 8081, etc...)
    - Define service names for specific ports
-   - Thumbnails are added to links based on the service name (name the file [servicename].png and put it into interface/images/)
+   - Thumbnails are added to links based on the service name (name the file `[servicename].png` and put it into `interface/images/`)
    - Force/Omit ips, ignore unwanted devices, while forcing devices without host names to appear in the list
    - Automatically processes fqdn's based on user specified domain
    - Prevent host server from appearing in server list
@@ -38,7 +38,7 @@ Install:
      `npm install`
      
    - Run server (may require root permissions based on download location)
-     `npm start`
+     `node server.js`
      
    - Additional options:
    
