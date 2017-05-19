@@ -28,6 +28,7 @@ Roadmap:
    - [x] Improve error reporting
    - [ ] Auto Installer
    - [ ] Restrict access to monitoring/settings pages
+   - [ ] Specify thumbnail by redirect > server > service
    
 Install:
 
