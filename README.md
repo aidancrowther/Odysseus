@@ -16,14 +16,14 @@ Status:
    - Thumbnails are added to links based on the service name (name the file `[servicename].png` and put it into `interface/images/`)
    - Force/Omit ips, ignore unwanted devices, while forcing devices without host names to appear in the list
    - Automatically processes fqdn's based on user specified domain
-   - Prevent host server from appearing in server list
+   - Option to prevent host server from appearing in server list
    - Redirect from host:port to host:port/page
    - Basic server monitoring, simply install RWHOD on servers to monitor, and RWHO on host server to enable monitoring
    
 Roadmap:
 
    - [x] Fix host redirects
-   - [ ] Allow services to appear on multiple ports
+   - [x] Allow services to appear on multiple ports
    - [x] Block hosts by name in web GUI
    - [x] Improve error reporting
    - [ ] Auto Installer
@@ -56,10 +56,10 @@ Usage:
    - __Ignore host__: Specify whether or no you want the host to appear in the server list (If ignore host is enabled you cannot omit the host by hostname)
    - __Omit/Force host__: select from the list of located devices to block/unblock the device by its IP, if the device has no hostname it will automatically be blocked, selecting it will toggle its forced mode. Forced IPs will be given their IP as a hostname
    - __Omit by hostname__: Enter a hostname (CASE sensitive) to prevent from appearing on the server list
-   - __Ports to scan__: Lists the ports that will be scanned, and their associated service (a few defaults have been included)
-   - __Add/Remove port__: enter a port in the form of `[port] - [service name]` to add/ovewrite it in the list, or just enter the port number to remove it from the list entirely.
-   - __Hosts to redirect__: shows a list of existing host redirects, and where they redirect to, currently each host can only have one redirect
-   - __Set/Remove host redirect__: enter a redirect in the form `[hostname]:[port]/[page]` to add/overwrite the entry in the list. To remove a redirect only enter the hostname for the redirect to remove
+   - __Ports to scan__: Lists the ports that will be scanned, and their associated service (a few defaults have been included). Selecting one or more ports will remove it from the list on submit
+   - __Add/Remove port__: enter a port in the form of `[port] - [service name]` to add/ovewrite it in the list.
+   - __Hosts to redirect__: shows a list of existing host redirects, and where they redirect to. Selecting one or more redirects will remove it from the list on submit
+   - __Set/Remove host redirect__: enter a redirect in the form `[hostname]:[port]/[page]` to add/overwrite the entry in the list
    - Click the submit button below any of the forms to commit the changes to the configuration
    - Click update list to save the configuration to the server and scan your network
    
@@ -73,5 +73,5 @@ Problems:
    
 Thank You:
 
-   Special Thanks to [eviltik/evilscan](https://github.com/eviltik/evilscan) for writing the port scanner that is the basis of this project.
+   Special Thanks to [eviltik/evilscan](https://github.com/eviltik/evilscan) for writing the port scanner that is the basis of this project, and to [emimontesdeoca/jordgubbe](https://github.com/emimontesdeoca/jordgubbe)/[AlessandroBerone/Pi-Home](https://github.com/AlessandroBerrone/Pi-Home) for the inspiration for this project!
     
