@@ -48,7 +48,9 @@ app.get('/update', function(req, res){
     //scan for thumbnails
     var images = fs.readdirSync('./interface/images');
     for(var image in images){
-        var current = images[image].split('.')[0];
+        var toSplit = images[image];
+        if(images[image].includes('-')) toSplit = toSplit.split('-')[1];
+        var current = toSplit.split('.')[0];
         if(thumbnails[current]) thumbnails[current].push(images[image]);
         else thumbnails[current] = [images[image]];
     }
@@ -108,6 +110,9 @@ app.get('/update', function(req, res){
                         }
                     }
                 }
+            }
+            if(thumbnails.hasOwnProperty(current['reverse'])){
+                devices[current['reverse']]['thumbnails'].push(thumbnails[current['reverse']][0]);
             }
         }
         //write hosts to hosts.json

@@ -46,7 +46,7 @@ function getList(){
         	if(typeof hostList[key]['port'] === 'string') ports = hostList[key]['port'].split(', ');
         	for(var port in ports) {
                 var div = $('<div id=' + hostList[key]['ip'] + '-' + ports[port] + ' class="host"><p>' + hostList[key]['reverse'] + '</p></div>');
-                if (hostList[key]['thumbnails']) addThumbnail(div, ports[port], hostList[key]['thumbnails']);
+                if (hostList[key]['thumbnails']) addThumbnail(div, ports[port], hostList[key]['thumbnails'], key);
                 $(div).click(redirect);
                 $('#pages').append($(div));
             }
@@ -58,14 +58,28 @@ function getList(){
 }
 
 //Add thumbnails to elements if they exist
-function addThumbnail(element, port, thumbnails){
-	if(typeof port == 'string') if(port.includes('/')) port = port.split('/')[0];
-	for(var key in thumbnails){
-		if(thumbnails[key].split('.')[0] == portList[port]){
-			$(element).html($(element).html()+'</p><p>'+thumbnails[key].split('.')[0]);
-			$(element).css('background-image', 'url(images/'+thumbnails[key]+')')
+function addThumbnail(element, port, thumbnails, host){
+    for (var key in thumbnails) {
+        if (thumbnails[key].split('.')[0] == portList[port]) {
+            $(element).html(host + '</p><p>' + thumbnails[key].split('.')[0]);
+            $(element).css('background-image', 'url(images/' + thumbnails[key] + ')');
         }
-	}
+    }
+
+    for (var key in thumbnails) {
+        var toSplit = thumbnails[key];
+        if(toSplit.includes('-')) toSplit = toSplit.split('-');
+        if (toSplit[1].split('.')[0] == host) {
+            $(element).html(host + '</p><p>' + toSplit[0]);
+            $(element).css('background-image', 'url(images/' + thumbnails[key] + ')');
+        }
+    }
+
+    if(!$(element).css('background-image')) {
+        $(element).html(host + '</p><p>' + 'default');
+        $(element).css('background-image', 'url(images/default.png)');
+    }
+
 }
 
 //Write a list of ips to the specified field
