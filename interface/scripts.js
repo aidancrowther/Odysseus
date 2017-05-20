@@ -94,14 +94,13 @@ function writeConfig(){
 	}
 	$('#domain').val(config['domain']);
 	var state = "False";
-	console.log(config['ignoreHost']);
 	if(config['ignoreHost'] == 'true') state = "True";
 	$('#ignoreHost').val(state);
 	$('#redirects').empty();
 	var redirects = config['redirect'];
 	for(var key in redirects) if(hosts[key] && key){
         for(var redirectPort in redirects[key]['ports']) {
-            $('#redirects').append('<option>' + key + ':' + redirects[key]['ports'][redirectPort] + ' => ' + key + ':' + redirects[key]['ports'][redirectPort] + redirects[key]['redirects'][redirectPort] + '</option>');
+            if(redirects[key]['ports'][redirectPort]) $('#redirects').append('<option>' + key + ':' + redirects[key]['ports'][redirectPort] + ' => ' + key + ':' + redirects[key]['ports'][redirectPort] + redirects[key]['redirects'][redirectPort] + '</option>');
         }
     }
 
@@ -180,12 +179,12 @@ function updateOmissions(){
             var locatedHost;
             for(var ip in allIps) if(allIps[ip]['reverse'] == host) locatedHost = allIps[ip];
             locatedHost['omit'] = false;
-            hosts[locatedHost['reverse']] = locatedHost;
         }
-        else if(hosts[host]){
-            config['omitHosts'].push(host);
-            allIps[hosts[host]['ip']]['omit'] = true;
-            delete hosts[host];
+        else{
+            for(var ip in allIps) if(allIps[ip]['reverse'] == host) {
+                config['omitHosts'].push(host);
+                allIps[ip]['omit'] = true;
+            }
         }
     }
     else{
@@ -228,7 +227,6 @@ function updatePorts(){
         var ports = config['ports'];
         for(var selection in selected){
             var toRemove = selected[selection].split(' - ')[0];
-            console.log(toRemove);
             config['ports'].splice(config['ports'].indexOf(toRemove), 1);
 
             //Do not allow the user to remove all ports
@@ -287,7 +285,7 @@ function redirectHost(){
         }
 
         if (hosts[host] && port && host && redirect) {
-            if (!config['redirect'][host]) config['redirect'][host] = [];
+            if (!config['redirect'][host]) config['redirect'][host] = {'ports': [''], 'redirects': ['']};
             if (config['redirect'][host]['ports'].includes(port)) {
                 config['redirect'][host]['redirects'].splice(config['redirect'][host]['ports'].indexOf(port), 1);
                 config['redirect'][host]['ports'].splice(config['redirect'][host]['ports'].indexOf(port), 1);

@@ -94,12 +94,12 @@ app.get('/update', function(req, res){
             //write hosts to json object, removing duplicates
             if (!devices[current['reverse']]) {
                 devices[current['reverse']] = current;
-                devices[current['reverse']]['port'] = current['port'] +', 8080';
+                devices[current['reverse']]['port'] = ''+current['port'];
                 devices[current['reverse']]['thumbnails'] = [];
             }
             else devices[current['reverse']]['port'] += ', ' + current['port'];
             for(var port in portList) {
-                if (current['port'].includes(port)) {
+                if (current['port'] == port) {
                     if (thumbnails.hasOwnProperty(portList[port])) if(!devices[current['reverse']]['thumbnails'].includes(thumbnails[portList[port]][0])) devices[current['reverse']]['thumbnails'].push(thumbnails[portList[port]][0]);
                     if(redirects.hasOwnProperty(current['reverse'])){
                         if(redirects[current['reverse']]['ports'].indexOf(port) >= 0){
