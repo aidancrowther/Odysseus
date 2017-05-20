@@ -168,27 +168,19 @@ app.get('/monitoring', function(req, res){
 
         for(var element in result){
             if(result[element]) hosts.push(result[element]);
+            if(result[element] == 'down') for(var i=0; i<6; i++) hosts.push('------------');
         }
         for(var j=0; j<(hosts.length/9); j++){
             var element = j*9;
             final[hosts[element]] = {};
             final[hosts[element]]['status'] = hosts[element+1];
-            if(final[hosts[element]]['status'] == 'down'){
-                final[hosts[element]]['uptime'] = '--';
-                final[hosts[element]]['users'] = '--';
-                final[hosts[element]]['1min'] = '--';
-                final[hosts[element]]['5min'] = '--';
-                final[hosts[element]]['15min'] = '--';
-            }
-            else {
-                final[hosts[element]]['uptime'] = hosts[element + 2];
-                final[hosts[element]]['users'] = hosts[element + 3];
-                final[hosts[element]]['1min'] = hosts[element + 6];
-                final[hosts[element]]['5min'] = hosts[element + 7];
-                final[hosts[element]]['15min'] = hosts[element + 8];
-            }
+            final[hosts[element]]['uptime'] = hosts[element + 2];
+            final[hosts[element]]['users'] = hosts[element + 3];
+            final[hosts[element]]['1min'] = hosts[element + 6];
+            final[hosts[element]]['5min'] = hosts[element + 7];
+            final[hosts[element]]['15min'] = hosts[element + 8];
         }
-        if(error !== null) final['error'] = error;
+        if(error != null) final['error'] = error;
         res.send(final);
     });
 });
