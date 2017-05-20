@@ -14,6 +14,7 @@ Status:
    - Scanning specified ports (80, 8081, etc...)
    - Define service names for specific ports
    - Thumbnails are added to links based on the service name (name the file `[servicename].png` and put it into `interface/images/`)
+   - Thumbnails can be forced by server name (name the file `[servicename]-[hostname].png`), this will override the service image
    - Force/Omit ips, ignore unwanted devices, while forcing devices without host names to appear in the list
    - Automatically processes fqdn's based on user specified domain
    - Option to prevent host server from appearing in server list
@@ -28,7 +29,7 @@ Roadmap:
    - [x] Improve error reporting
    - [ ] Auto Installer
    - [ ] Restrict access to monitoring/settings pages
-   - [ ] Specify thumbnail by redirect > server > service
+   - [x] Specify thumbnail by server > service
    
 Install:
 
