@@ -2,7 +2,7 @@
 
 Description:
 
-  Odysseus is a tool designed to automatically scan, and track servers on a home network, allowing an easier solution for loading webGUI's, as well as providing rudimentary server monitoring through RWHO.
+  Odysseus is a tool designed to automatically scan, and track servers on a home network, allowing an easier solution for loading webGUI's, as well as providing rudimentary server monitoring through RWHO. Screenshots can be found at: http://imgur.com/a/xHjbG
   
 Status:
   
