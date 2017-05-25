@@ -30,6 +30,7 @@ Roadmap:
    - [ ] Auto Installer
    - [ ] Restrict access to monitoring/settings pages
    - [x] Specify thumbnail by server > service
+   - [ ] Add thumbnail upload
    
 Install:
 
