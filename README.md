@@ -39,7 +39,7 @@ Install:
    - Navigate to Odysseus folder and install packages
      `npm install`
      
-   - Run server (may require root permissions based on download location)
+   - Run server (This should be done as an unprivileged user)
      `node server.js`
      
    - Additional options:
