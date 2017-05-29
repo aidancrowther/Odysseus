@@ -20,6 +20,7 @@ Status:
    - Option to prevent host server from appearing in server list
    - Redirect from host:port to host:port/page
    - Basic server monitoring, simply install RWHOD on servers to monitor, and RWHO on host server to enable monitoring
+   - Thumbnail uploading (follow thumbnail naming convention)
    
 Roadmap:
 
@@ -30,7 +31,7 @@ Roadmap:
    - [ ] Auto Installer
    - [ ] Restrict access to monitoring/settings pages
    - [x] Specify thumbnail by server > service
-   - [ ] Add thumbnail upload
+   - [x] Add thumbnail upload
    
 Install:
 
@@ -63,6 +64,8 @@ Usage:
    - __Add/Remove port__: enter a port in the form of `[port] - [service name]` to add/ovewrite it in the list.
    - __Hosts to redirect__: shows a list of existing host redirects, and where they redirect to. Selecting one or more redirects will remove it from the list on submit
    - __Set/Remove host redirect__: enter a redirect in the form `[hostname]:[port]/[page]` to add/overwrite the entry in the list
+   - __Upload Thumbnail__: Select a thumbnail to upload to the server, following the naming convention of `[Service] - [Server].png` or `[Service].png`
+   - __Remove Thumbnail__: Delete all selected thumbnails in the thumbnail selection box
    - Click the submit button below any of the forms to commit the changes to the configuration
    - Click update list to save the configuration to the server and scan your network
    
