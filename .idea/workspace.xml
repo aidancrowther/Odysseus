@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5e749978-4ed2-488f-a3bd-da3e07f1c46a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.json" afterPath="$PROJECT_DIR$/config.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hosts.json" afterPath="$PROJECT_DIR$/hosts.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/interface/monitoring.html" afterPath="$PROJECT_DIR$/interface/monitoring.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/interface/scripts.js" afterPath="$PROJECT_DIR$/interface/scripts.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/interface/settings.html" afterPath="$PROJECT_DIR$/interface/settings.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ips.json" afterPath="$PROJECT_DIR$/ips.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.js" afterPath="$PROJECT_DIR$/server.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -90,11 +82,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="settings.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="settings.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/interface/settings.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="163">
-              <caret line="111" column="62" lean-forward="true" selection-start-line="111" selection-start-column="62" selection-end-line="111" selection-end-column="62" />
+            <state relative-caret-position="299">
+              <caret line="119" column="68" lean-forward="false" selection-start-line="119" selection-start-column="68" selection-end-line="119" selection-end-column="68" />
               <folding>
                 <element signature="n#style#0;n#hr#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#hr#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -114,11 +106,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="scripts.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="scripts.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/interface/scripts.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="26" column="41" lean-forward="true" selection-start-line="26" selection-start-column="41" selection-end-line="26" selection-end-column="41" />
+            <state relative-caret-position="238">
+              <caret line="14" column="22" lean-forward="true" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -419,7 +411,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="121741000" />
+    <option name="totallyTimeSpent" value="121977000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -893,10 +885,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/interface/scripts.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="22" lean-forward="true" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/interface/settings.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="163">
-          <caret line="111" column="62" lean-forward="true" selection-start-line="111" selection-start-column="62" selection-end-line="111" selection-end-column="62" />
+        <state relative-caret-position="299">
+          <caret line="119" column="68" lean-forward="false" selection-start-line="119" selection-start-column="68" selection-end-line="119" selection-end-column="68" />
           <folding>
             <element signature="n#style#0;n#hr#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#hr#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -912,14 +912,6 @@
             <element signature="n#style#0;n#div#1;n#div#1;n#div#0;n#div#0;n#div#1;n#footer#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#button#0;n#center#0;n#div#2;n#div#0;n#div#0;n#div#1;n#footer#0;n#html#0;n#!!top" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/interface/scripts.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="41" lean-forward="true" selection-start-line="26" selection-start-column="41" selection-end-line="26" selection-end-column="41" />
-          <folding />
         </state>
       </provider>
     </entry>
