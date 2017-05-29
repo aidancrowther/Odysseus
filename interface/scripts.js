@@ -31,6 +31,13 @@ $(document).ready(function(){
     $('#omitHostBtn').click(function(){
         updateOmissions();
     });
+    $('#thumbnailBtn').change(function(){
+        if($('#thumbnailBtn').val().includes('.png')) $('#thumbnailForm').submit();
+        setTimeout(function(){writeThumbnails();}, 50);
+    });
+    $('#thumbnailRemove').click(function(){
+        removeThumbnails();
+    });
     $('.hideModal').click(function(){
         clearModals();
     });
@@ -126,6 +133,8 @@ function writeConfig(){
 	else{
         $('#monitors').slideUp(1000);
 	}
+
+	writeThumbnails();
 }
 
 function checkConfig(){
@@ -374,6 +383,26 @@ function populateMonitors(){
             }
         }
     });
+}
+
+function writeThumbnails(){
+    $.get('/thumbnails', function(data){
+        $('#thumbnails').empty();
+        for(var thumbnail in data){
+            if(data[thumbnail][0].includes('.png')) $('#thumbnails').append("<option id='"+thumbnail+"'>"+thumbnail+" : "+data[thumbnail][0]+"</option>");
+        }
+    });
+}
+
+function removeThumbnails(){
+    var selected = $('#thumbnails').val();
+    var toRemove = {'toRemove': []};
+
+    for(var selection in selected) toRemove['toRemove'].push(selected[selection].split(' : ')[1]);
+
+    $.post('/removeThumbnails', toRemove, function(data, status){});
+
+    writeThumbnails();
 }
 
 //Send client to webpage

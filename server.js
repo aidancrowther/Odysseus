@@ -8,8 +8,20 @@ var app = express();
 var evilscan = require('evilscan');
 var ip = require('ip');
 var bodyParser = require('body-parser');
-const exec = require('child_process').exec;
-require('events').EventEmitter.prototype._maxListeners = 100;
+var multer = require('multer');
+
+var Storage = multer.diskStorage({
+    destination: function(req, file, callback){
+        callback(null, './interface/images/');
+    },
+    filename: function(req, file, callback){
+        callback(null, file.originalname);
+    }
+});
+
+var upload = multer({
+    storage: Storage
+}).array("image", 1);
 
 //program constants
 const ROOT = './interface';
@@ -46,14 +58,7 @@ app.get('/update', function(req, res){
     allIps = {};
 
     //scan for thumbnails
-    var images = fs.readdirSync('./interface/images');
-    for(var image in images){
-        var toSplit = images[image];
-        if(images[image].includes('-')) toSplit = toSplit.split('-')[1];
-        var current = toSplit.split('.')[0];
-        if(thumbnails[current]) thumbnails[current].push(images[image]);
-        else thumbnails[current] = [images[image]];
-    }
+    thumbnails = getThumbnails();
 
     //set the scanners options
     options['target'] = ipRange;
@@ -185,5 +190,35 @@ app.get('/monitoring', function(req, res){
     });
 });
 
+app.get('/thumbnails', function(req, res){
+    res.send(getThumbnails());
+});
+
+app.post('/thumbnails', function(req, res){
+    upload(req, res, function(err){
+        if(err) return res.sendStatus(500);
+        return res.sendStatus(204);
+    });
+});
+
+app.post('/removeThumbnails', urlEncodedParser, function(req, res){
+    var toRemove = req.body.toRemove;
+    for(var image in toRemove) fs.unlink('./interface/images/'+toRemove[image]);
+    res.send("Files removed successfully");
+});
+
 //listen for requests on port 8080
 app.listen(PORT, function(err){if(err) console.log(err)});
+
+function getThumbnails(){
+    var thumbnails = {};
+    var images = fs.readdirSync('./interface/images');
+    for(var image in images){
+        var toSplit = images[image];
+        if(images[image].includes('-')) toSplit = toSplit.split('-')[1];
+        var current = toSplit.split('.')[0];
+        if(thumbnails[current]) thumbnails[current].push(images[image]);
+        else thumbnails[current] = [images[image]];
+    }
+    return thumbnails;
+}
