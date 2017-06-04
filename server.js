@@ -9,6 +9,7 @@ var evilscan = require('evilscan');
 var ip = require('ip');
 var bodyParser = require('body-parser');
 var multer = require('multer');
+var exec = require('child_process').exec;
 
 var Storage = multer.diskStorage({
     destination: function(req, file, callback){
