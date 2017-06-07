@@ -33,6 +33,11 @@ Roadmap:
    - [x] Specify thumbnail by server > service
    - [x] Add thumbnail upload
    
+Requirements:
+
+    - Basic use of Odysseus requires nodeJs for the webserver. All node modules are installed using npm install
+    - Server monitoring requires the installation of RWHO on the server, but is not required for use of Odysseus
+   
 Install:
 
    - Download repository
