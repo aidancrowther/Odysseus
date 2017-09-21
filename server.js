@@ -171,11 +171,15 @@ app.get('/monitoring', function(req, res){
         var result = stdout.split(/[ ,\n/\\]+/);
         var hosts = [];
         var final = {};
+        var down = false;
 
         for(var element in result){
             if(result[element]) hosts.push(result[element]);
-            if(result[element] == 'down') for(var i=0; i<6; i++) hosts.push('------------');
+            if(result[element] == 'down') down = true;;
         }
+        
+        if(down){for(var i=0; i<6; i++) hosts.push('------------');}
+        
         for(var j=0; j<(hosts.length/9); j++){
             var element = j*9;
             final[hosts[element]] = {};
