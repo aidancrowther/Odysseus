@@ -21,7 +21,6 @@ $(document).ready(function(){
         config['monitoring'] = ($('#enableMonitoring').val() == "True");
         if($('#enableMonitoring').val() == "True"){
             $('#monitors').slideDown(1000);
-            populateMonitors();
         }
         else{
             $('#monitors').slideUp(1000);
@@ -128,7 +127,8 @@ function writeConfig(){
 	if(config['monitoring'] == "true"){
         $('#enableMonitoring').val("True");
         $('#monitors').slideDown(1000);
-        populateMonitors();
+	populateMonitors();
+        var populate = setInterval(populateMonitors, 60000);
 	}
 	else{
         $('#monitors').slideUp(1000);
