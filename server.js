@@ -178,8 +178,7 @@ app.get('/monitoring', function(req, res){
             if(result[element] == 'down') down = true;
         }
 
-	if(down){for(var i=0; i<6; i++) hosts.push('-------------')};
-
+	if(down){for(var i=0; i<6; i++) hosts.push('-----------')};
         for(var j=0; j<(hosts.length/9); j++){
             var element = j*9;
             final[hosts[element]] = {};
