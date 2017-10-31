@@ -51,7 +51,7 @@ Install:
      
    - Additional options:
    
-      - Set server port in `server.json` `const port = 80;`
+      - Set server port in `server.js` `const port = 80;`
       - Setup monitoring by installing RWHO on server `sudo apt-get install rwho`, and RWHOD on clients `sudo apt-get install rwhod`
       - Add thumbnails to the images folder to add more flair to links based on their service, name thumbnails `[service].png`
       
