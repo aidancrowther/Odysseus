@@ -6,7 +6,7 @@ Description:
   
 Status:
   
-   This project is still under heavy development, the current distribution is mostly stable, however it is still case sensitive, and      doesnt provide much error reporting
+   This project is still under heavy development, the current distribution is mostly stable, however it is still case sensitive, and doesnt provide much error reporting
    
    Currently Supports:
    
