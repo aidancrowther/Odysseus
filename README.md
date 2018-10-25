@@ -1,10 +1,10 @@
 # Odysseus - Network Tracking Tool
 
-Description:
+## Description:
 
   Odysseus is a tool designed to automatically scan, and track servers on a home network, allowing an easier solution for loading webGUI's, as well as providing rudimentary server monitoring through RWHO. Screenshots can be found at: http://imgur.com/a/xHjbG
   
-Status:
+## Status:
   
    This project is still under heavy development, the current distribution is mostly stable, however it is still case sensitive, and doesnt provide much error reporting
    
@@ -22,7 +22,7 @@ Status:
    - Basic server monitoring, simply install RWHOD on servers to monitor, and RWHO on host server to enable monitoring
    - Thumbnail uploading (follow thumbnail naming convention)
    
-Roadmap:
+## Roadmap:
 
    - [x] Fix host redirects
    - [x] Allow services to appear on multiple ports
@@ -33,12 +33,12 @@ Roadmap:
    - [x] Specify thumbnail by server > service
    - [x] Add thumbnail upload
    
-Requirements:
+## Requirements:
 
     - Basic use of Odysseus requires nodeJs for the webserver. All node modules are installed using npm install
     - Server monitoring requires the installation of RWHO on the server, but is not required for use of Odysseus
    
-Install:
+## Install:
 
    - Download repository
      `git clone https://github.com/aidancrowther/Odysseus`
@@ -54,8 +54,20 @@ Install:
       - Set server port in `server.js` `const port = 80;`
       - Setup monitoring by installing RWHO on server `sudo apt-get install rwho`, and RWHOD on clients `sudo apt-get install rwhod`
       - Add thumbnails to the images folder to add more flair to links based on their service, name thumbnails `[service].png`
+
+## Docker Install:
+To use Odysseus as a Docker container, you can follow these steps.
+
+In the root directory of the Odysseus repo, run
+
+`docker build -t odysseus:latest .`
+
+Followed by
+
+`docker run -d -p 8080:80 odysseus`
+
       
-Usage:
+## Usage:
 
    After getting your server running you can access the webpage by connecting to your hosts ip adress on the port you specified (default 80). The home page will show hosts that have been found on your network, and should be blank on first connection. Navigate to the settings page in order to setup the scanner, setting descriptions are as follows:
    
