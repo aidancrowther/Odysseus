@@ -56,6 +56,7 @@
       - Add thumbnails to the images folder to add more flair to links based on their service, name thumbnails `[service].png`
 
 ## Docker Install:
+
 To use Odysseus as a Docker container, you can follow these steps.
 
 In the root directory of the Odysseus repo, run
@@ -65,6 +66,18 @@ In the root directory of the Odysseus repo, run
 Followed by
 
 `docker run -d -p 8080:80 odysseus`
+
+You can now access Odysseus at `localhost:8080`
+
+## Docker-compose Install:
+
+To use Odysseus with Docker-compose, you can follow these steps.
+
+In the root directory of the Odysseus repo, run
+
+`docker-compose up`
+
+You can now access Odysseus at `localhost:8080`
 
       
 ## Usage:
@@ -90,11 +103,11 @@ If you now navigate to the home page you should see a number of buttons with lab
 
 The monitoring page allows you to keep track of your servers name, status, uptime, number of users, and cpu load averages. These stats are found using the ruptime command, requiring the rwho package on the host, and rwhod on each server to be monitored. If your host does not have this package monitoring will be disabled. Upon enabling monitoring, or navigating to the monitoring page once it has been enabled you will be presented with the server stats in a table format.
       
-Problems:
+## Problems:
 
    Please feel free to notify me of any issues you encounter, and I will fix them as soon as possible. I am open to any suggestions or requests, and will work to make the program as functional as possible
    
-Thank You:
+## Thank You:
 
    Special Thanks to [eviltik/evilscan](https://github.com/eviltik/evilscan) for writing the port scanner that is the basis of this project, and to [emimontesdeoca/jordgubbe](https://github.com/emimontesdeoca/jordgubbe) and [AlessandroBerone/Pi-Home](https://github.com/AlessandroBerrone/Pi-Home) for the inspiration for this project!
     
