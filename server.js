@@ -24,9 +24,24 @@ var upload = multer({
     storage: Storage
 }).array("image", 1);
 
+if(!fs.existsSync('config.json')) fs.writeFileSync('config.json', JSON.stringify(
+	{"omitHosts": [''],
+	"ports": ["80"],
+	"ignoreHost": true,
+	"monitoring": false,
+	"ipScanStart": "192.168.0.1",
+	"ipScanEnd": "192.168.0.254",
+	"domain": "local",
+	"redirect": {"Host":{"ports":["port"],"redirects":["/redirect"]}}
+	}), (err) => {console.log(err)});
+if(!fs.existsSync('hosts.json')) fs.writeFileSync('hosts.json', JSON.stringify({}), (err) => {console.log(err)});
+if(!fs.existsSync('ports.json')) fs.writeFileSync('ports.json', JSON.stringify({80: 'web'}), (err) => {console.log(err)});
+if(!fs.existsSync('ips.json')) fs.writeFileSync('ips.json', JSON.stringify({}), (err) => {console.log(err)});
+if(!fs.existsSync('hosts.json')) fs.writeFileSync('hosts.json', JSON.stringify({}), (err) => {console.log(err)});
+
 //program constants
 const ROOT = './interface';
-const PORT = 80;
+const PORT = 4000;
 const IP = ip.address();
 
 //global variables

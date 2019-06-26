@@ -126,8 +126,8 @@ function writeConfig(){
 
 	if(config['monitoring'] == "true"){
         $('#enableMonitoring').val("True");
-        $('#monitors').slideDown(1000);
-	populateMonitors();
+        populateMonitors();
+	setTimeout(() => {$('#monitors').slideDown(1000)}, 100);
         var populate = setInterval(populateMonitors, 60000);
 	}
 	else{
@@ -178,7 +178,7 @@ function checkConfig(){
 
     if (config['ipOmit'] == [] || !config['ipOmit']) config['ipOmit'] = [''];
     if (config['ipForce'] == [] || !config['ipForce']) config['ipForce'] = [''];
-    if(!config['redirect']['Host']) config['redirect']['Host'] = ["port", "/redirect"];
+    if (!config['redirect']['Host']) config['redirect']['Host'] = ["port", "/redirect"];
 
     return configOkay;
 }
