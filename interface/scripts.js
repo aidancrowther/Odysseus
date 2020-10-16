@@ -26,7 +26,12 @@ $(document).ready(function(){
             $('#monitors').slideUp(1000);
         }
         writeUpdate(true);
-	});
+    });
+    $('#setSpeed').click(function(){
+        config['updateSpeed'] = $('#updateSpeed').val();
+        writeUpdate(true);
+        location.reload();
+    });
     $('#omitHostBtn').click(function(){
         updateOmissions();
     });
@@ -126,9 +131,10 @@ function writeConfig(){
 
 	if(config['monitoring'] == "true"){
         $('#enableMonitoring').val("True");
+        if(config['updateSpeed']) $('#updateSpeed').val(config['updateSpeed']);
         populateMonitors();
 	setTimeout(() => {$('#monitors').slideDown(1000)}, 100);
-        var populate = setInterval(populateMonitors, 60000);
+        var populate = setInterval(populateMonitors, $('#updateSpeed').val()*1000);
 	}
 	else{
         $('#monitors').slideUp(1000);

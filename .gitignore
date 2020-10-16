@@ -1,2 +1,4 @@
 node_modules/
 *.json
+.idea/
+nohup.out

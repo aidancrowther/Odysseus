@@ -41,7 +41,7 @@ if(!fs.existsSync('hosts.json')) fs.writeFileSync('hosts.json', JSON.stringify({
 
 //program constants
 const ROOT = './interface';
-const PORT = 4000;
+const PORT = 80;
 const IP = ip.address();
 
 //global variables
