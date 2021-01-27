@@ -48,7 +48,7 @@ Install:
      `npm install`
      
    - Run server (This should be done as an unprivileged user)
-     `node server.js`
+     `npm run-script start`
      
    - Additional options:
    
