@@ -5,6 +5,7 @@
 
 // import utilities
 const express = require('express');
+const path = require('path');
 const app = express();
 const ip = require('ip');
 const bodyParser = require('body-parser');
@@ -22,20 +23,21 @@ const ips = require('./endpoints/ips');
 const config = require('./endpoints/config');
 
 // program constants
-const ROOT = './interface';
 const PORT = 80;
 
 // global variables
 global.IP = ip.address();
 global.allIps = {};
+/** Static file directory */
+global.static = path.join(__dirname, 'interface');
 
 // Sets up the configuration files
 setupConfig();
 
 // static file server
-app.use(express.static('interface'));
+app.use(express.static(path.join(__dirname, 'interface')));
 // respond to request for index.html
-app.get('/', (req, res) => res.sendFile(ROOT + '/index.html'));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'interface/index.html')));
 // General use middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'));
@@ -57,4 +59,6 @@ app.get('/ups-status', upsStatus.get);
 app.use((err, req, res, next) => { console.error(err); });
 
 // listen for requests on port 8080
-app.listen(PORT, (err) => { if (err) console.log(err); });
+app.listen(PORT, (err) => {
+  if (err) console.log(err);
+});

@@ -2,6 +2,7 @@ const fs = require('fs');
 const promisify = require('util').promisify;
 const unlink = promisify(fs.unlink);
 const multer = require('multer');
+const path = require('path');
 const storage = require('../storage');
 const getThumbnails = require('../thumbnails').getThumbnails;
 
@@ -30,6 +31,6 @@ exports.post = async function (req, res) {
  */
 exports.del = async function (req, res) {
   const toRemove = req.body.toRemove;
-  for (const image in toRemove) { await unlink('./interface/images/' + toRemove[image]); }
+  for (const image in toRemove) { await unlink(path.join(global.static, 'images') + toRemove[image]); }
   res.send('Files removed successfully');
 };
