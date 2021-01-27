@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Odysseus - UPS Monitoring</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+    <script src="scripts.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <p class="navbar-brand">Odysseus Home</p>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="nav navbar-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="monitoring.html">Monitoring</a></li>
+                <li><a href="settings.html">Settings</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <!-- <li><button class="btn navbar-btn" id="loginButton"><span class="glyphicon glyphicon-log-in"></span>Login</button> -->
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col col-md-10 col-md-offset-1">
+            <div class="panel panel-default">
+                <h2>UPS Monitoring</h2>
+                <br>
+                <center><div id="upsCharts"></div></center>
+                <div id="upsConfig"><center><label for="upsConfig">UPS Configuration Panel <span id="panel-left" class="glyphicon glyphicon-menu-left"></span><span id="panel-down" class="glyphicon glyphicon-menu-down"></span></label></center></div>
+                <center>
+                    <div id="upsConfigPanel" style="max-width: 40%;">
+                        <div id="UPSlist">
+                        </div>
+                        <div id="newUPSPanel">
+                        </div>
+                        <br>
+                        <button id="addUPSConfig" class="btn btn-default">Add UPS <span class="glyphicon glyphicon-plus-sign"></span></button>
+                        <button id="saveUPSConfig" class="btn btn-default" disabled>Save Config</button>
+                        <button id="applyUPSConfig" class="btn btn-success">Apply <span class="glyphicon glyphicon-ok"></span></button>
+                    </div>
+                    <br>
+                    <div style="display: flex;justify-content: center;">
+                        <label for="enableUPSMonitoring">Enable Monitoring: </label>
+                        <select class="form-control" id="enableUPSMonitoring" style="max-width:42%;">
+                            <option val="false">False</option>
+                            <option val="true">True</option>
+                        </select>
+                    </div>
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<footer>
+    <center><p>Made By: Aidan Crowther</p></center>
+</footer>
+</html>

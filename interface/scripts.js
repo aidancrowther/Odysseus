@@ -2,11 +2,14 @@ var portList = {};
 var allIps = {};
 var config = {};
 var hosts = {};
+let charts = {};
+let upsStatus = {};
 
 //get values and attach button listeners
 $(document).ready(function(){
 	getPorts();
-	getConfig();
+    getConfig();
+    toggleUPSPanel(false);
 	$('#updateBtn').click(function(){
 		updateConfig();
 		writeUpdate();
@@ -44,6 +47,29 @@ $(document).ready(function(){
     });
     $('.hideModal').click(function(){
         clearModals();
+    });
+    $('#upsConfig').click(function(){
+		toggleUPSPanel($('#panel-down').css('display') == "none");
+    });
+    $('#addUPSConfig').click(function(){
+        addUPS();
+    });
+    $('#saveUPSConfig').click(function(){
+        saveUPS();
+    });
+    $('#applyUPSConfig').click(function(){
+        writeUpdate(true);
+        drawGraphs();
+    });
+    $('#enableUPSMonitoring').change(function(){
+        config['upsMonitoring'] = ($('#enableUPSMonitoring').val() == "True");
+        if($('#enableUPSMonitoring').val() == "True"){
+            $('#upsCharts').slideDown(1000);
+        }
+        else{
+            $('#upsCharts').slideUp(1000);
+        }
+        writeUpdate(true);
     });
 });
 
@@ -129,7 +155,7 @@ function writeConfig(){
         }
     }
 
-	if(config['monitoring'] == "true"){
+	if(config['monitoring'] == "true" && $('#enableMonitoring').val() != undefined){
         $('#enableMonitoring').val("True");
         if(config['updateSpeed']) $('#updateSpeed').val(config['updateSpeed']);
         populateMonitors();
@@ -138,8 +164,17 @@ function writeConfig(){
 	}
 	else{
         $('#monitors').slideUp(1000);
-	}
+    }
 
+    if(config['upsMonitoring'] == "true" && $('#enableUPSMonitoring').val() != undefined){
+        $('#enableUPSMonitoring').val("True");
+        let updateUPSCharts = setInterval(updateGraphs, 5000);
+        getUPSStatus(true);
+    } else {
+        getUPSStatus(false);
+    }
+    
+    loadUPSList();
 	writeThumbnails();
 }
 
@@ -450,4 +485,277 @@ function clearModals(){
     $('#warningModalFooter .hideModal').css('display', 'none');
     $('#updateModal').modal('hide');
     $('#warningModal').modal('hide');
+}
+
+function toggleUPSPanel(visible){
+    let toggleVal = visible ? '' : 'none';
+    let inverse = visible ? 'none' : '';
+    $('#panel-left').css('display', inverse);
+    $('#panel-down').css('display', toggleVal);
+    $('#upsConfigPanel').css('display', toggleVal);
+}
+
+function addUPS(){
+    $('#newUPSPanel').append('<div class="form-group">\
+    <label for="address">NUT Address: </label>\
+    <input class="form-control" id="address" placeholder="ups@localhost">\
+    <label for="extras">Additional Monitored Stats (Seperate with semicolon): </label>\
+    <input class="form-control" id="extras" placeholder="e.g battery.runtime; ups.power">\
+    <label for="power">UPS Nominal Power Override (Watts)</label>\
+    <input class="form-control" id="power" placeholder="e.g 900">\
+    </div>');
+    $('#addUPSConfig').prop('disabled', true);
+    $('#saveUPSConfig').prop('disabled', false);
+}
+
+function saveUPS(){
+    let ups = {
+        "address": "",
+        "extras": [],
+        "power": ""
+    };
+    if ($('#address').val() != '') ups['address'] = $('#address').val();
+    ups['power'] = $('#power').val();
+
+    for(let extra of $('#extras').val().split(';')){
+        ups["extras"].push(extra.trim());
+    }
+
+    if(!config["UPSlist"]) config["UPSlist"] = [];
+    config["UPSlist"].push(ups);
+
+    $('#newUPSPanel').empty();
+    $('#addUPSConfig').prop('disabled', false);
+    $('#saveUPSConfig').prop('disabled', true);
+
+    loadUPSList();
+}
+
+function loadUPSList(){
+    $('#UPSlist').empty();
+    
+    for(let ups in config["UPSlist"]){
+        $('#UPSlist').append('<div id="UPS-'+ups+'" class="form-group">\
+        <label for="address">NUT Address: </label>\
+        <input class="form-control address" disabled>\
+        <label for="extras">Additional Monitored Stats: </label>\
+        <input class="form-control extras" disabled>\
+        <label for="power">UPS Nominal Power Override (Watts)</label>\
+        <input class="form-control power" disabled>\
+        <br><button id="removeUPSConfig" onclick="removeUPS('+ups+')" class="btn btn-danger">Remove <span class="glyphicon glyphicon-remove"></span></button> \
+        </div>');
+
+        $('#UPS-'+ups+' .address').val(config["UPSlist"][ups]['address']);
+        $('#UPS-'+ups+' .extras').val(config["UPSlist"][ups]['extras'].join('; '));
+        $('#UPS-'+ups+' .power').val(config["UPSlist"][ups]['power']);
+    }
+}
+
+function removeUPS(id){
+    config["UPSlist"].splice(id, 1);
+    loadUPSList();
+}
+
+function getUPSStatus(drawCharts){
+    $.get('/ups-status', function(res){
+		upsStatus = res;
+	}).done(function(){
+		if(drawCharts) drawGraphs();
+	});
+}
+
+function drawGraphs(){
+
+    let status = upsStatus;
+
+    $('#upsCharts').empty();
+    let idx = 0;
+
+    for(let ups of status){
+
+        $('#upsCharts').append('\
+        <h2>'+ups['device.model']+'</h2>\
+        <table>\
+        <tr>\
+        <td><div style="display: flex;justify-content: center;"><h3>UPS Load</h3></div></td>\
+        <td><div style="display: flex;justify-content: center;"><h3>Battery Capacity</h3></td>\
+        <td><div style="display: flex;justify-content: center;"><h3>Power Draw</h3></td>\
+        <td><div style="display: flex;justify-content: center;"><h3>Estimated Runtime</h3></td>\
+        </tr>\
+        <tr>\
+        <td><canvas id="loadChart'+idx+'" width="340vw" height="240vh"></canvas></td>\
+        <td><canvas id="capacityChart'+idx+'" width="340vw" height="240vh"></canvas></td>\
+        <td><canvas id="powerChart'+idx+'" width="340vw" height="240vh"></canvas></td>\
+        <td><canvas id="runtime'+idx+'" width="340vw" height="240vh"></canvas></td>\
+        </tr>\
+        <td><div style="display: flex;justify-content: center;"><h3 id="loadValue'+idx+'"></h3><h3>%</h3></div></td>\
+        <td><div style="display: flex;justify-content: center;"><h3 id="capacityValue'+idx+'"></h3><h3>%</h3></div></td>\
+        <td><div style="display: flex;justify-content: center;"><h3 id="powerValue'+idx+'"></h3><h3>Watts</h3></div></td>\
+        </table>');
+
+        charts[idx] = {
+            "load": null,
+            "capacity": null,
+            "power": null,
+            "runtime": null
+        }
+
+        createLoadGauge(idx);
+        createCapacityGauge(idx);
+        createPowerGauge(idx);
+        createRuntimeCanvas(idx);
+        idx++;
+    }
+
+    updateGraphs();
+      
+}
+
+function createLoadGauge(upsId){
+    var opts = {
+        angle: 0.15, // The span of the gauge arc
+        lineWidth: 0.3, // The line thickness
+        radiusScale: 0.8, // Relative radius
+        pointer: {
+          length: 0.42, // // Relative to gauge radius
+          strokeWidth: 0.05, // The thickness
+          color: '#000000' // Fill color
+        },
+        staticLabels: {
+            font: "10px sans-serif",  // Specifies font
+            labels: [0, 30, 70, 100],  // Print labels at these values
+            color: "#000000",  // Optional: Label text color
+            fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+        },
+        staticZones: [
+            {strokeStyle: "#F03E3E", min: 70, max: 100}, // Red from 100 to 130
+            {strokeStyle: "#FFDD00", min: 30, max: 70}, // Yellow
+            {strokeStyle: "#30B32D", min: 0, max: 30}, // Green
+         ],
+        limitMax: true,     // If false, max value increases automatically if value > maxValue
+        limitMin: true,     // If true, the min value of the gauge will be fixed
+        colorStart: '#6FADCF',   // Colors
+        colorStop: '#8FC0DA',    // just experiment with them
+        strokeColor: '#E0E0E0',  // to see which ones work best for you
+        generateGradient: true,
+        highDpiSupport: true,     // High resolution support
+        
+    };
+    var target = document.getElementById('loadChart'+upsId); // your canvas element
+    var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+    gauge.maxValue = 100; // set max gauge value
+    gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+    gauge.animationSpeed = 32; // set animation speed (32 is default value)
+    gauge.setTextField(document.getElementById('loadValue'+upsId));
+    gauge.set(0); // set actual value
+
+    charts[upsId]['load'] = gauge;
+
+}
+
+function createCapacityGauge(upsId){
+    var opts = {
+        angle: 0.15, // The span of the gauge arc
+        lineWidth: 0.3, // The line thickness
+        radiusScale: 0.8, // Relative radius
+        pointer: {
+          length: 0.42, // // Relative to gauge radius
+          strokeWidth: 0.05, // The thickness
+          color: '#000000' // Fill color
+        },
+        staticLabels: {
+            font: "10px sans-serif",  // Specifies font
+            labels: [0, 30, 70, 100],  // Print labels at these values
+            color: "#000000",  // Optional: Label text color
+            fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+        },
+        staticZones: [
+            {strokeStyle: "#F03E3E", min: 0, max: 30}, // Red from 100 to 130
+            {strokeStyle: "#FFDD00", min: 30, max: 70}, // Yellow
+            {strokeStyle: "#30B32D", min: 70, max: 100}, // Green
+         ],
+        limitMax: true,     // If false, max value increases automatically if value > maxValue
+        limitMin: true,     // If true, the min value of the gauge will be fixed
+        colorStart: '#6FADCF',   // Colors
+        colorStop: '#8FC0DA',    // just experiment with them
+        strokeColor: '#E0E0E0',  // to see which ones work best for you
+        generateGradient: true,
+        highDpiSupport: true,     // High resolution support
+        
+      };
+      var target = document.getElementById('capacityChart'+upsId); // your canvas element
+      var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+      gauge.maxValue = 100; // set max gauge value
+      gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+      gauge.animationSpeed = 32; // set animation speed (32 is default value)
+      gauge.setTextField(document.getElementById('capacityValue'+upsId));
+      gauge.set(50); // set actual value
+
+      charts[upsId]['capacity'] = gauge;
+}
+
+function createPowerGauge(upsId){
+
+    let nominalPower = config['UPSlist'][upsId]['power'];
+
+    var opts = {
+        angle: 0.15, // The span of the gauge arc
+        lineWidth: 0.3, // The line thickness
+        radiusScale: 0.8, // Relative radius
+        pointer: {
+          length: 0.42, // // Relative to gauge radius
+          strokeWidth: 0.05, // The thickness
+          color: '#000000' // Fill color
+        },
+        staticLabels: {
+            font: "10px sans-serif",  // Specifies font
+            labels: [0, (nominalPower*0.3), (nominalPower*0.7), (nominalPower*1)],  // Print labels at these values
+            color: "#000000",  // Optional: Label text color
+            fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+        },
+        staticZones: [
+            {strokeStyle: "#F03E3E", min: (nominalPower*0.7), max: (nominalPower*1)}, // Red from 100 to 130
+            {strokeStyle: "#FFDD00", min: (nominalPower*0.3), max: (nominalPower*0.7)}, // Yellow
+            {strokeStyle: "#30B32D", min: 0, max: (nominalPower*0.3)}, // Green
+         ],
+        limitMax: true,     // If false, max value increases automatically if value > maxValue
+        limitMin: true,     // If true, the min value of the gauge will be fixed
+        colorStart: '#6FADCF',   // Colors
+        colorStop: '#8FC0DA',    // just experiment with them
+        strokeColor: '#E0E0E0',  // to see which ones work best for you
+        generateGradient: true,
+        highDpiSupport: true,     // High resolution support
+        
+      };
+      var target = document.getElementById('powerChart'+upsId); // your canvas element
+      var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+      gauge.maxValue = nominalPower; // set max gauge value
+      gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+      gauge.animationSpeed = 32; // set animation speed (32 is default value)
+      gauge.setTextField(document.getElementById('powerValue'+upsId));
+      gauge.set(nominalPower); // set actual value
+
+      charts[upsId]['power'] = gauge;
+}
+
+function createRuntimeCanvas(upsId){
+    var canvas = document.getElementById("runtime"+upsId);
+    var ctx = canvas.getContext("2d");
+    ctx.font = "30px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("0 minutes", canvas.width/2, canvas.height/2);
+    charts[upsId]['runtime'] = [canvas, ctx];
+}
+
+function updateGraphs(){
+
+    getUPSStatus(false);
+
+    for(let chart in charts){
+        charts[chart]['load'].set(upsStatus[chart]['ups.load']);
+        charts[chart]['capacity'].set(upsStatus[chart]['battery.charge']);
+        charts[chart]['power'].set((upsStatus[chart]['ups.load']/100)*config['UPSlist'][chart]['power']);
+        charts[chart]['runtime'][1].clearRect(0, 0, charts[chart]['runtime'][0].width, charts[chart]['runtime'][0].height);
+        charts[chart]['runtime'][1].fillText((upsStatus[chart]['battery.runtime']/60).toFixed(2)+" minutes", charts[chart]['runtime'][0].width/2, charts[chart]['runtime'][0].height/2);
+    }
 }

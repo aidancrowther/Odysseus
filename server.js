@@ -10,6 +10,7 @@ var ip = require('ip');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var exec = require('child_process').exec;
+const execSync = require('child_process').execSync;
 
 var Storage = multer.diskStorage({
     destination: function(req, file, callback){
@@ -32,7 +33,9 @@ if(!fs.existsSync('config.json')) fs.writeFileSync('config.json', JSON.stringify
 	"ipScanStart": "192.168.0.1",
 	"ipScanEnd": "192.168.0.254",
 	"domain": "local",
-	"redirect": {"Host":{"ports":["port"],"redirects":["/redirect"]}}
+    "redirect": {"Host":{"ports":["port"],"redirects":["/redirect"]}},
+    "updateSpeed": "0",
+    "UPSlist": []
 	}), (err) => {console.log(err)});
 if(!fs.existsSync('hosts.json')) fs.writeFileSync('hosts.json', JSON.stringify({}), (err) => {console.log(err)});
 if(!fs.existsSync('ports.json')) fs.writeFileSync('ports.json', JSON.stringify({80: 'web'}), (err) => {console.log(err)});
@@ -240,4 +243,23 @@ function getThumbnails(){
         else thumbnails[current] = [images[image]];
     }
     return thumbnails;
-}
+} 
+
+//return ups monitoring results
+app.get('/ups-status', function(req, res){
+    let config = JSON.parse(fs.readFileSync('config.json'));
+    let results = [];
+
+    for(let ups of config['UPSlist']){
+        let dataDict = {};
+
+        let status = execSync('upsc '+ups.address);
+        status = status.toString("utf8");
+        for(let entry of status.split('\n')){
+            if(entry != "") dataDict[entry.split(':')[0]] = entry.split(':')[1].trim();
+        }
+
+        results.push(dataDict);
+    }
+    res.send(results);
+});

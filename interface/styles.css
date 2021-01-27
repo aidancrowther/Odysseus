@@ -47,3 +47,7 @@ div.host{
 	margin: 0 auto;
 	text-align: center;
 }
+
+div.configurationPanel{
+	text-align: center;
+}
