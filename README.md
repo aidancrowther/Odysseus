@@ -32,6 +32,7 @@ Roadmap:
    - [ ] Restrict access to monitoring/settings pages
    - [x] Specify thumbnail by server > service
    - [x] Add thumbnail upload
+   - [X] Add UPS Monitoring
    
 Requirements:
 
@@ -53,6 +54,7 @@ Install:
    
       - Set server port in `server.js` `const port = 80;`
       - Setup monitoring by installing RWHO on server `sudo apt-get install rwho`, and RWHOD on clients `sudo apt-get install rwhod`
+      - Setup UPS monitoring by install Network UPS Tool (NUT) on host and NUT server on UPS hosts
       - Add thumbnails to the images folder to add more flair to links based on their service, name thumbnails `[service].png`
       
 Usage:
@@ -77,6 +79,8 @@ Usage:
 If you now navigate to the home page you should see a number of buttons with labels for your servers, and if configured images. Clicking these will automatically redirect you to their appropriate page.
 
 The monitoring page allows you to keep track of your servers name, status, uptime, number of users, and cpu load averages. These stats are found using the ruptime command, requiring the rwho package on the host, and rwhod on each server to be monitored. If your host does not have this package monitoring will be disabled. Upon enabling monitoring, or navigating to the monitoring page once it has been enabled you will be presented with the server stats in a table format.
+
+The UPS page allows you to configure and monitor NUT servers (including localhost). Set the address as `<UPS name>@<NUT server>`, specify nominal power in order to monitor UPS wattage (currently required while in Beta), and specify extra UPS results to monitor (currently does nothing). Please not that the UPS page is in Beta and as such is missing many ease of use/error catching features, use may be subject to bugs.
       
 Problems:
 
