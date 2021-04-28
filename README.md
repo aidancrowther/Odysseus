@@ -1,10 +1,10 @@
 # Odysseus - Network Tracking Tool
 
-Description:
+## Description:
 
   Odysseus is a tool designed to automatically scan, and track servers on a home network, allowing an easier solution for loading webGUI's, as well as providing rudimentary server monitoring through RWHO. Screenshots can be found at: http://imgur.com/a/xHjbG
   
-Status:
+## Status:
   
    This project is still under heavy development, the current distribution is mostly stable, however it is still case sensitive, and doesnt provide much error reporting
    
@@ -22,7 +22,7 @@ Status:
    - Basic server monitoring, simply install RWHOD on servers to monitor, and RWHO on host server to enable monitoring
    - Thumbnail uploading (follow thumbnail naming convention)
    
-Roadmap:
+## Roadmap:
 
    - [x] Fix host redirects
    - [x] Allow services to appear on multiple ports
@@ -34,12 +34,12 @@ Roadmap:
    - [x] Add thumbnail upload
    - [X] Add UPS Monitoring
    
-Requirements:
+## Requirements:
 
     - Basic use of Odysseus requires nodeJs for the webserver. All node modules are installed using npm install
     - Server monitoring requires the installation of RWHO on the server, but is not required for use of Odysseus
    
-Install:
+## Install:
 
    - Download repository
      `git clone https://github.com/aidancrowther/Odysseus`
@@ -56,8 +56,33 @@ Install:
       - Setup monitoring by installing RWHO on server `sudo apt-get install rwho`, and RWHOD on clients `sudo apt-get install rwhod`
       - Setup UPS monitoring by install Network UPS Tool (NUT) on host and NUT server on UPS hosts
       - Add thumbnails to the images folder to add more flair to links based on their service, name thumbnails `[service].png`
+
+## Docker Install:
+
+To use Odysseus as a Docker container, you can follow these steps.
+
+In the root directory of the Odysseus repo, run
+
+`docker build -t odysseus:latest .`
+
+Followed by
+
+`docker run -d -p 8080:80 odysseus`
+
+You can now access Odysseus at `localhost:8080`
+
+## Docker-compose Install:
+
+To use Odysseus with Docker-compose, you can follow these steps.
+
+In the root directory of the Odysseus repo, run
+
+`docker-compose up`
+
+You can now access Odysseus at `localhost:8080`
+
       
-Usage:
+## Usage:
 
    After getting your server running you can access the webpage by connecting to your hosts ip adress on the port you specified (default 80). The home page will show hosts that have been found on your network, and should be blank on first connection. Navigate to the settings page in order to setup the scanner, setting descriptions are as follows:
    
@@ -82,11 +107,11 @@ The monitoring page allows you to keep track of your servers name, status, uptim
 
 The UPS page allows you to configure and monitor NUT servers (including localhost). Set the address as `<UPS name>@<NUT server>`, specify nominal power in order to monitor UPS wattage (currently required while in Beta), and specify extra UPS results to monitor (currently does nothing). Please not that the UPS page is in Beta and as such is missing many ease of use/error catching features, use may be subject to bugs.
       
-Problems:
+## Problems:
 
    Please feel free to notify me of any issues you encounter, and I will fix them as soon as possible. I am open to any suggestions or requests, and will work to make the program as functional as possible
    
-Thank You:
+## Thank You:
 
    Special Thanks to [eviltik/evilscan](https://github.com/eviltik/evilscan) for writing the port scanner that is the basis of this project, and to [emimontesdeoca/jordgubbe](https://github.com/emimontesdeoca/jordgubbe) and [AlessandroBerone/Pi-Home](https://github.com/AlessandroBerrone/Pi-Home) for the inspiration for this project!
     
