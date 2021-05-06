@@ -3,5 +3,8 @@ services:
   odysseus:
     build:
       context: ./
+    volumes:
+      - ./:/app/
     ports:
       - 8080:80
+  
