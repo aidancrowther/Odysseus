@@ -1,0 +1,27 @@
+{
+  "name": "odysseus",
+  "version": "2.0.1",
+  "description": "A local network IP scanning utility",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aidancrowther/Odysseus.git"
+  },
+  "author": "Aidan Crowther",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aidancrowther/Odysseus/issues"
+  },
+  "homepage": "https://github.com/aidancrowther/Odysseus#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "evilscan": "^1.8.1",
+    "express": "^4.17.1",
+    "ip": "^1.1.5",
+    "multer": "^1.4.3"
+  }
+}

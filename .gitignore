@@ -1,4 +1,7 @@
 node_modules/
-*.json
+ports.json
+ips.json
+hosts.json
+config.json
 .idea/
 nohup.out
